@@ -11,9 +11,9 @@ class IncomeTypesSeeder extends Seeder
     public function run()
     {
         DB::table('income_types')->insert([
-            ['name' => 'Regular'],
-            ['name' => 'Ticket Food'],
-            ['name' => 'Ticket Meals'],
+            ['name' => 'Regular', 'created_at' => now()],
+            ['name' => 'Ticket Food', 'created_at' => now()],
+            ['name' => 'Ticket Meals', 'created_at' => now()],
         ]);
     }
 }
