@@ -2,63 +2,48 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\IncomeSources;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
+use App\Services\IncomeSourcesService;
 class IncomeSourcesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    private $Service;
+    public function __construct()
     {
-        //
+        $this->Service = new IncomeSourcesService();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    public function get()
+    {
+        return $this->Service->getList();
+    }
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(IncomeSources $incomeSources)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(IncomeSources $incomeSources)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, IncomeSources $incomeSources)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(IncomeSources $incomeSources)
     {
         //
