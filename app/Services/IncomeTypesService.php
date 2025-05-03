@@ -9,13 +9,24 @@ class IncomeTypesService
         return IncomeTypes::select('id', 'name')->get();
     }
 
-    public function createIncomeType()
+    public function getIncomeTypeById(int $id)
     {
-
+        return IncomeTypes::find($id);
     }
 
-    public function editIncomeType()
+    public function createIncomeType(Array $incomeType)
     {
+        IncomeTypes::create($incomeType);
+        return true;
+    }
 
+    public function editIncomeType(Int $id, String $name)
+    {
+        $type = $this->getIncomeTypeById($id);
+        $type->update([
+            "name" => $name,
+        ]);
+
+        return true;
     }
 }
