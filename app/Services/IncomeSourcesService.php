@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+use App\Enums\StatusEnum;
 use App\Models\IncomeSources;
 class IncomeSourcesService
 {
@@ -9,22 +10,46 @@ class IncomeSourcesService
         return IncomeSources::whereActive()->select('id', 'name')->get();
     }
 
-    public function createIncomeSource()
+    public function getIncomeSourceById(Int $id)
+    {
+        return IncomeSources::find($id);
+    }
+
+    public function createIncomeSource(Array $incomeSource)
+    {
+        IncomeSources::create($incomeSource);
+        return true;
+    }
+
+    public function editIncomeSource(Int $id, String $name)
+    {
+        $incomeSource = $this->getIncomeSourceById($id);
+        $incomeSource->update([
+            "name" => $name
+        ]);
+
+        return true;
+    }
+
+    public function removeIncomeSource(Int $id)
+    {
+        $incomeSource = $this->getIncomeSourceById($id);
+        if($incomeSource->status === StatusEnum::Active->value)
+        {
+            return $this->disableIncomeSource($id, $incomeSource);
+        }
+        else
+        {
+            return $this->enableIncomeSource($id, $incomeSource);
+        }
+    }
+
+    public function enableIncomeSource(Int $id, $incomeSource)
     {
 
     }
 
-    public function editIncomeSource() 
-    {
-
-    }
-
-    public function enableIncomeSource()
-    {
-
-    }
-
-    public function disableIncomeSource()
+    public function disableIncomeSource(Int $id, $incomeSource)
     {
 
     }
