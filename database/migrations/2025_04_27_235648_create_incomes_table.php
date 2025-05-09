@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 45);
             $table->double('value', 15, 2);
-            $table->date('entry_date');
+            $table->integer('entry_day');
             $table->foreignId('source_id')->constrained('income_sources')->onDelete('cascade');
             $table->foreignId('type_id')->constrained('income_types')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');

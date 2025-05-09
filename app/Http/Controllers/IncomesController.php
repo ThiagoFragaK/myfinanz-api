@@ -2,65 +2,58 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Incomes;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\Incomes;
+use App\Services\IncomesService;
 
 class IncomesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    private $Service;
+    public function __construct()
     {
-        //
+        $this->Service = new IncomesService();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function get()
     {
-        //
+        return $this->Service->getList();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function getIncomeById(Int $id)
+    {
+        return $this->Service->getIncomeById($id);
+    }
+
     public function store(Request $request)
     {
-        //
+        return $this->Service->createIncome(
+            $request->get('name'),
+            $request->get('value'),
+            $request->get('entry_day'),
+            $request->get('source_id'),
+            $request->get('type_id'),
+        );
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Incomes $incomes)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Incomes $incomes)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+
     public function update(Request $request, Incomes $incomes)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Incomes $incomes)
+    public function disableIncome(Int $id)
     {
-        //
+        return $this->Service->disableIncome($id);
+    }
+
+    public function enableIncome(Int $id)
+    {
+        return $this->Service->enableIncome($id);
     }
 }
