@@ -7,7 +7,7 @@ class IncomeSourcesService
 {
     public function getList()
     {
-        return IncomeSources::whereActive()->select('id', 'name')->get();
+        return IncomeSources::whereActive()->select('id', 'name', 'status')->get();
     }
 
     public function getIncomeSourceById(Int $id)

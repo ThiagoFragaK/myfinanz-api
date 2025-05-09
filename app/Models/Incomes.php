@@ -10,7 +10,7 @@ class Incomes extends Model
     use HasFactory;
 
     protected $table = 'incomes';
-	protected $fillable = ['id', 'name', 'value', 'entry_date', 'source_id', 'type_id', 'user_id', 'status', 'created_at'];
+	protected $fillable = ['id', 'name', 'value', 'entry_day', 'source_id', 'type_id', 'user_id', 'status', 'created_at'];
 	protected $guarded = ['id'];
 	protected $hidden = [];
 

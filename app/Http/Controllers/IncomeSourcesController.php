@@ -18,15 +18,12 @@ class IncomeSourcesController extends Controller
     {
         return $this->Service->getList();
     }
-
-    public function create()
-    {
-        //
-    }
-
+    
     public function store(Request $request)
     {
-        //
+        return $this->Service->createIncomeSource([
+            "name" => $request->get("name"),
+        ]);
     }
 
     public function show(IncomeSources $incomeSources)
