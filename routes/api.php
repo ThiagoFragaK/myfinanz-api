@@ -37,8 +37,11 @@ Route::controller(IncomesController::class)
         function () 
         {
             Route::get('/', 'get');
+            Route::get('/{id}', 'getIncomeById');
             Route::post('/', 'store');
             Route::put('/{id}', 'edit');
+            Route::patch('disable/{id}', 'disableIncome');
+            Route::patch('enable/{id}', 'enableIncome');
         }
     );
 
