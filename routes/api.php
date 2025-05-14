@@ -16,22 +16,6 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-// Route::controller(CardsController::class)
-//     ->prefix('cards')->group(
-//         function () 
-//         {
-//             Route::get('/', 'get');
-//         }
-//     );
-
-// Route::controller(ExpensesController::class)
-//     ->prefix('expenses')->group(
-//         function () 
-//         {
-//             Route::get('/', 'get');
-//         }
-//     );
-
 Route::controller(IncomesController::class)
     ->prefix('incomes')->group(
         function () 
@@ -50,6 +34,7 @@ Route::controller(IncomeTypesController::class)
         function () 
         {
             Route::get('/', 'get');
+            Route::get('/{id}', 'getIncomeTypeById');
             Route::post('/', 'store');
             Route::put('/{id}', 'edit');
         }
@@ -64,6 +49,22 @@ Route::controller(IncomeSourcesController::class)
             Route::put('/{id}', 'edit');
         }
     );
+
+// Route::controller(ExpensesController::class)
+//     ->prefix('expenses')->group(
+//         function () 
+//         {
+//             Route::get('/', 'get');
+//         }
+//     );
+
+// Route::controller(CardsController::class)
+//     ->prefix('cards')->group(
+//         function () 
+//         {
+//             Route::get('/', 'get');
+//         }
+//     );
 
 // Route::controller(ParcelsController::class)
 //     ->prefix('parcels')->group(
