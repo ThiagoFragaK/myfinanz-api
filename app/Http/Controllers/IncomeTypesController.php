@@ -21,6 +21,11 @@ class IncomeTypesController extends Controller
         return $this->Service->getList();
     }
 
+    public function getIncomeById(Int $id)
+    {
+        return $this->Service->getIncomeTypeById($id);
+    }
+
     public function store(Request $request)
     {
         $status = $this->Service->createIncomeType([
@@ -57,15 +62,5 @@ class IncomeTypesController extends Controller
             $id,
             $request->get("name"),
         );
-    }
-
-    public function update(Request $request, IncomeTypes $incomeTypes)
-    {
-        //
-    }
-
-    public function destroy(IncomeTypes $incomeTypes)
-    {
-        //
     }
 }

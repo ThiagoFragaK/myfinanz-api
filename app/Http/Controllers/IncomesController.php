@@ -36,15 +36,14 @@ class IncomesController extends Controller
         );
     }
 
-    public function edit(Incomes $incomes)
+    public function edit(Int $id, Request $request)
     {
-        //
-    }
-
-
-    public function update(Request $request, Incomes $incomes)
-    {
-        //
+        return $this->Service->editIncome(
+            $id,
+            $request->get('name'),
+            $request->get('value'),
+            $request->get('entry_day'),
+        );
     }
 
     public function disableIncome(Int $id)
