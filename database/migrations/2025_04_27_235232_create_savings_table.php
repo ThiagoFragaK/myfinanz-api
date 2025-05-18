@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('savings', function (Blueprint $table) {
             $table->id();
             $table->double('value', 12, 2);
+            $table->tinyInteger('is_positive')->default('1');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

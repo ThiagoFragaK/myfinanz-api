@@ -15,7 +15,7 @@ return new class extends Migration
             $table->double('value', 12, 2);
             $table->tinyInteger('status')->default(1);
             $table->tinyInteger('open')->default(1);
-            $table->date('due_date');
+            $table->integer('due_day');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
