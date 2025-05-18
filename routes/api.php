@@ -8,7 +8,6 @@ use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\IncomesController;
 use App\Http\Controllers\IncomeSourcesController;
 use App\Http\Controllers\IncomeTypesController;
-use App\Http\Controllers\ParcelsController;
 use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\SavingsController;
 
@@ -45,47 +44,58 @@ Route::controller(IncomeSourcesController::class)
         function () 
         {
             Route::get('/', 'get');
+            Route::get('/{id}', 'getIncomeSourceById');
             Route::post('/', 'store');
             Route::put('/{id}', 'edit');
+            Route::patch('disable/{id}', 'disableSource');
+            Route::patch('enable/{id}', 'enableSource');
         }
     );
 
-// Route::controller(ExpensesController::class)
-//     ->prefix('expenses')->group(
-//         function () 
-//         {
-//             Route::get('/', 'get');
-//         }
-//     );
+Route::controller(ExpensesController::class)
+    ->prefix('expenses')->group(
+        function () 
+        {
+            Route::get('/', 'get');
+            Route::get('/{id}', 'getExpenseById');
+            Route::post('/', 'store');
+            Route::put('/', 'edit');
+        }
+    );
 
-// Route::controller(CardsController::class)
-//     ->prefix('cards')->group(
-//         function () 
-//         {
-//             Route::get('/', 'get');
-//         }
-//     );
+Route::controller(CardsController::class)
+    ->prefix('cards')->group(
+        function () 
+        {
+            Route::get('/', 'get');
+            Route::get('/{id}', 'getCardById');
+            Route::post('/', 'store');
+            Route::put('/', 'edit');
+            Route::patch('/disable/{id}', 'disableCard');
+            Route::patch('/enable/{id}', 'enableCard');
+        }
+    );
 
-// Route::controller(ParcelsController::class)
-//     ->prefix('parcels')->group(
-//         function () 
-//         {
-//             Route::get('/', 'get');
-//         }
-//     );
+Route::controller(PaymentsController::class)
+    ->prefix('payments')->group(
+        function () 
+        {
+            Route::get('/', 'get');
+            Route::get('/{id}', 'getPaymentById');
+            Route::post('/', 'store');
+            Route::put('/', 'edit');
+            Route::patch('/disable/{id}', 'disablePayment');
+            Route::patch('/pay/{id}', 'payDebt');
+        }
+    );
 
-// Route::controller(PaymentsController::class)
-//     ->prefix('payments')->group(
-//         function () 
-//         {
-//             Route::get('/', 'get');
-//         }
-//     );
-
-// Route::controller(SavingsController::class)
-//     ->prefix('savings')->group(
-//         function () 
-//         {
-//             Route::get('/', 'get');
-//         }
-//     );
+Route::controller(SavingsController::class)
+    ->prefix('savings')->group(
+        function () 
+        {
+            Route::get('/', 'get');
+            Route::get('/{id}', 'getSavingById');
+            Route::post('/', 'store');
+            Route::put('/', 'edit');
+        }
+    );
