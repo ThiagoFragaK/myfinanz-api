@@ -2,65 +2,123 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Payments;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Services\PaymentsService;
 
 class PaymentsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    private $Service;
+    public function __construct()
     {
-        //
+        $this->Service = new PaymentsService();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function get()
     {
-        //
+        return response()->json([
+            'success' => true,
+            'message' => 'List retrieved successfully',
+            'data' => $this->Service->getList()
+        ], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function getPaymentById(Int $id)
+    {
+        return response()->json([
+            'success' => true,
+            'message' => "Income Source retrieved successfully",
+            'data' => $this->Service->getPaymentById($id)
+        ], 200);
+    }
+
     public function store(Request $request)
     {
-        //
+        $response = $this->Service->createPayment(
+            $request->get("name"),
+            $request->get("description"),
+            $request->get("value"),
+            $request->get("due_date"),
+        );
+        
+        if(isset($response['errors']))
+        {
+            return response()->json([
+                'success' => false,
+                'message' => "Failed to create Payment",
+                'error' => $response['errors']
+            ], $response['http']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Payment created successfully",
+            'data' => $response
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Payments $payments)
+    public function edit(Int $id, Request $request)
     {
-        //
+        $payment = $this->Service->editPayment(
+            $id,
+            $request->get("name"),
+            $request->get("description"),
+            $request->get("value"),
+            $request->get("due_date"),
+        );
+        
+        if(isset($income['errors']))
+        {
+            return response()->json([
+                'success' => false,
+                'message' => "Failed to find the Payment",
+                'errors' => $income['errors']
+            ], $income['http']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Payment retrieved successfully",
+            'data' => $payment
+        ], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Payments $payments)
+    public function disablePayment(Int $id)
     {
-        //
+        $response =  $this->Service->disablePayment($id);
+        if(isset($response['errors']))
+        {
+            return response()->json([
+                'success' => false,
+                'message' => "Failed to disable Payment",
+                'error' => $response['errors']
+            ], $response['http']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Payment disabled successfully",
+            'data' => $response
+        ], 201);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Payments $payments)
+    public function payDebt(Int $id)
     {
-        //
-    }
+        $response =  $this->Service->payDebt($id);
+        if(isset($response['errors']))
+        {
+            return response()->json([
+                'success' => false,
+                'message' => "Failed to update pay Debt",
+                'error' => $response['errors']
+            ], $response['http']);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Payments $payments)
-    {
-        //
+        return response()->json([
+            'success' => true,
+            'message' => "Debt paid successfully",
+            'data' => $response
+        ], 201);
     }
 }
