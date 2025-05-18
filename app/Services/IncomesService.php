@@ -26,16 +26,22 @@ class IncomesService
         $type = (new IncomeTypesService())->getIncomeTypeById($typeId);
         if(is_null($type))
         {
-            return false;
+            return [
+                'errors' => "Failed to retrieve Income Type",
+                'http' => 400
+            ];
         }
 
         $source = (new IncomeSourcesService())->getIncomeSourceById($sourceId);
         if(is_null($source))
         {
-            return false;
+            return [
+                'errors' => "Failed to retrieve Income Source",
+                'http' => 400
+            ];
         }
 
-        Incomes::create([
+        return Incomes::create([
             "name" => $name,
             "value" => $value,
             "entry_day" => $entryDay,
@@ -44,51 +50,55 @@ class IncomesService
             "status" => StatusEnum::Active->value,
             "user_id" => 1
         ]);
-        return true;
     }
 
     public function editIncome(Int $id, String $name, Float $value, Int $entryDay)
     {
         $income = $this->getIncomeById($id);
-        $income->update([
+        if(is_null($income))
+        {
+            return [
+                'errors' => "Failed to retrieve Income",
+                'http' => 404
+            ];
+        }
+
+        return $income->update([
             "name" => $name,
             "value" => $value,
             "entry_day" => $entryDay
         ]);
-
-        return true;
-    }
-
-    public function updateIncomeStatus(Int $id)
-    {
-        $income = $this->getIncomeById($id);
-        if($income->status === StatusEnum::Active->value)
-        {
-            return $this->disableIncome($id, $income);
-        }
-        else
-        {
-            return $this->enableIncome($id, $income);
-        }
     }
 
     public function enableIncome(Int $id)
     {
         $income = $this->getIncomeById($id);
+        if(is_null($income))
+        {
+            return [
+                'errors' => "Failed to retrieve Income",
+                'http' => 404
+            ];
+        }
+
         $income->update([
             "status" => StatusEnum::Active->value,
         ]);
-
-        return true;
     }
 
     public function disableIncome(Int $id)
     {
         $income = $this->getIncomeById($id);
-        $income->update([
+        if(is_null($income))
+        {
+            return [
+                'errors' => "Failed to retrieve Income",
+                'http' => 404
+            ];
+        }
+
+        return $income->update([
             "status" => StatusEnum::Inactive->value,
         ]);
-
-        return true;
     }
 }

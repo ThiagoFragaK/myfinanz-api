@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\IncomeTypes;
 use App\Http\Controllers\Controller;
 use App\Services\IncomeTypesService;
-use Ramsey\Uuid\Type\Integer;
 
 class IncomeTypesController extends Controller
 {
@@ -18,49 +16,65 @@ class IncomeTypesController extends Controller
 
     public function get()
     {
-        return $this->Service->getList();
+        return response()->json([
+            'success' => true,
+            'message' => 'List retrieved successfully',
+            'data' => $this->Service->getList()
+        ], 200);
     }
 
-    public function getIncomeById(Int $id)
+    public function getIncomeTypeById(Int $id)
     {
-        return $this->Service->getIncomeTypeById($id);
+        return response()->json([
+            'success' => true,
+            'message' => "Income Type retrieved successfully",
+            'data' => $this->Service->getIncomeTypeById($id)
+        ], 200);
     }
 
     public function store(Request $request)
     {
-        $status = $this->Service->createIncomeType([
+        $response = $this->Service->createIncomeType([
             "name" => $request->get("name"),
             "created_at" => now(),
         ]);
 
-        if($status)
+        if(isset($response['errors']))
         {
-            return response()->json((object) [
-                "message" => "Income type created successfully",
-                "status_http" => 201
-            ]);
+            return response()->json([
+                'success' => false,
+                'message' => "Failed to create Income Type",
+                'error' => $response['errors']
+            ], $response['http']);
         }
 
-        return response()->json((object) [
-            "message" => "Income type failed to be created.",
-            "status_http" => 500
-        ]);
-    }
-
-    public function show(Int $id)
-    {
-        return response()->json((object) [
-            "message" => "Income type has been returned successfully",
-            "data" => $this->Service->getIncomeTypeById($id),
-            "status_http" => 200
-        ]);
+        return response()->json([
+            'success' => true,
+            'message' => "Income Type created successfully",
+            'data' => $response
+        ], 201);
     }
 
     public function edit(Int $id, Request $request)
     {
-        return $this->Service->editIncomeType(
+        $incomeType = $this->Service->editIncomeType(
             $id,
             $request->get("name"),
         );
+        
+        if(isset($income['errors']))
+        {
+            return response()->json([
+                'success' => false,
+                'message' => "Failed to find the Income",
+                'errors' => $income['errors']
+            ], $income['http']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Income retrieved successfully",
+            'data' => $incomeType
+        ], 200);
     }
 }

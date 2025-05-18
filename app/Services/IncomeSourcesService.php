@@ -17,40 +17,54 @@ class IncomeSourcesService
 
     public function createIncomeSource(Array $incomeSource)
     {
-        IncomeSources::create($incomeSource);
-        return true;
+        return IncomeSources::create($incomeSource);
     }
 
     public function editIncomeSource(Int $id, String $name)
     {
         $incomeSource = $this->getIncomeSourceById($id);
-        $incomeSource->update([
+        if(is_null($incomeSource))
+        {
+            return [
+                'errors' => "Failed to retrieve Income Source",
+                'http' => 400
+            ];
+        }
+
+        return $incomeSource->update([
             "name" => $name
         ]);
-
-        return true;
     }
 
-    public function removeIncomeSource(Int $id)
+    public function enableSource(Int $id)
     {
-        $incomeSource = $this->getIncomeSourceById($id);
-        if($incomeSource->status === StatusEnum::Active->value)
+        $income = $this->getIncomeSourceById($id);
+        if(is_null($income))
         {
-            return $this->disableIncomeSource($id, $incomeSource);
+            return [
+                'errors' => "Failed to retrieve Income Source",
+                'http' => 404
+            ];
         }
-        else
+
+        $income->update([
+            "status" => StatusEnum::Active->value,
+        ]);
+    }
+
+    public function disableSource(Int $id)
+    {
+        $income = $this->getIncomeSourceById($id);
+        if(is_null($income))
         {
-            return $this->enableIncomeSource($id, $incomeSource);
+            return [
+                'errors' => "Failed to retrieve Income Source",
+                'http' => 404
+            ];
         }
-    }
 
-    public function enableIncomeSource(Int $id, $incomeSource)
-    {
-
-    }
-
-    public function disableIncomeSource(Int $id, $incomeSource)
-    {
-
+        return $income->update([
+            "status" => StatusEnum::Inactive->value,
+        ]);
     }
 }

@@ -16,17 +16,22 @@ class IncomeTypesService
 
     public function createIncomeType(Array $incomeType)
     {
-        IncomeTypes::create($incomeType);
-        return true;
+        return IncomeTypes::create($incomeType);
     }
 
     public function editIncomeType(Int $id, String $name)
     {
         $type = $this->getIncomeTypeById($id);
-        $type->update([
+        if(is_null($type))
+        {
+            return [
+                'errors' => "Failed to retrieve Income Type",
+                'http' => 404
+            ];
+        }
+
+        return $type->update([
             "name" => $name,
         ]);
-
-        return true;
     }
 }
