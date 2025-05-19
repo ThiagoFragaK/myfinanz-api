@@ -6,7 +6,11 @@ class SavingsService
 {
     public function getList()
     {
-        return Savings::select('id', 'value', 'is_positive',)->get();
+        $savings = Savings::select('id', 'value', 'is_positive', 'created_at')->orderBy('created_at', 'desc')->get();
+        return [
+            'list' => $savings,
+            'sum' => $this->sumSavings($savings)
+        ];
     }
 
     public function getSavingById(int $id)
@@ -19,6 +23,7 @@ class SavingsService
         return Savings::create([
             'value' => $value,
             'is_positive' => $isPositive,
+            'user_id' => 1,
         ]);
     }
 
@@ -37,5 +42,12 @@ class SavingsService
             "value" => $value,
             "is_positive" => $isPositive,
         ]);
+    }
+
+    private function sumSavings($savings)
+    {
+        return $savings->reduce(function ($sum, $item) {
+            return $sum + ($item->is_positive ? $item->value : -$item->value);
+        }, 0);
     }
 }
