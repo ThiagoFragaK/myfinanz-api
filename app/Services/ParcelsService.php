@@ -45,6 +45,7 @@ class ParcelsService
                 'value' => $valueByParcel,
                 'date' => $now->copy()->addMonths($i),
                 'parcel' => $i,
+                'created_at' => now()
             ];
         }
         return $parcellist;
