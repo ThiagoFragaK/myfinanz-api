@@ -16,7 +16,7 @@ class ExpensesService
 
     public function getList()
     {
-        return Expenses::select('id', 'name', 'description', 'card_id', 'parcel_number', 'value')->get();
+        return Expenses::with('cards')->select('id', 'name', 'description', 'card_id', 'parcel_numbers', 'value')->get();
     }
 
     public function getExpenseById(int $id)
@@ -39,7 +39,7 @@ class ExpensesService
             'name' => $name,
             'description' => $description,
             'card_id' => $cardId,
-            'parcel_number' => $parcelNumber,
+            'parcel_numbers' => $parcelNumber,
             'value' => $value,
         ])->id;
 
@@ -51,7 +51,7 @@ class ExpensesService
         );
     }
 
-    public function editExpense(Int $id, String $name, String $description, Int $cardId, Int $parcelNumber, Float $value)
+    public function editExpense(Int $id, String $name, String $description, Int $cardId, Int $parcelNumbers, Float $value)
     {
         $expense = $this->getExpenseById($id);
         if(is_null($expense))
@@ -61,18 +61,18 @@ class ExpensesService
                 'http' => 404
             ];
         }
-
+        
         $expense->update([
             'name' => $name,
             'description' => $description,
             'card_id' => $cardId,
-            'parcel_number' => $parcelNumber,
+            'parcel_numbers' => $parcelNumbers,
             'value' => $value,
         ]);
 
         return $this->ParcelsService->editParcelsFromExpense(
             $id,
-            $parcelNumber,
+            $parcelNumbers,
             $value,
             $cardId
         );

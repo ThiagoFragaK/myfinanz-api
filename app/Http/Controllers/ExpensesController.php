@@ -39,7 +39,7 @@ class ExpensesController extends Controller
             $request->get("name"),
             $request->get("description"),
             $request->get("card_id"),
-            $request->get("parcel_number"),
+            $request->get("parcel_numbers"),
             $request->get("value"),
         );
         
@@ -66,7 +66,7 @@ class ExpensesController extends Controller
             $request->get("name"),
             $request->get("description"),
             $request->get("card_id"),
-            $request->get("parcel_number"),
+            $request->get("parcel_numbers"),
             $request->get("value"),
         );
         
