@@ -7,6 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Payments extends Model
 {
-    /** @use HasFactory<\Database\Factories\PaymentsFactory> */
     use HasFactory;
+
+    protected $table = 'payments';
+	protected $fillable = ['id', 'name', 'description', 'value', 'due_day', 'status', 'open', 'user_id', 'created_at'];
+	protected $guarded = ['id'];
+	protected $hidden = [];
+
+    public function user()
+	{
+		return $this->hasOne('App\Models\User', 'id', 'user_id')
+            ->select('id', 'name');
+	}
 }
