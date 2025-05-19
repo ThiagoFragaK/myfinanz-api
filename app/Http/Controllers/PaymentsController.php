@@ -39,7 +39,9 @@ class PaymentsController extends Controller
             $request->get("name"),
             $request->get("description"),
             $request->get("value"),
-            $request->get("due_date"),
+            $request->get("constValue"),
+            $request->get("dueDay"),
+            $request->get("endDate"),
         );
         
         if(isset($response['errors']))
@@ -84,6 +86,25 @@ class PaymentsController extends Controller
         ], 200);
     }
 
+    public function enablePayment(Int $id)
+    {
+        $response =  $this->Service->enablePayment($id);
+        if(isset($response['errors']))
+        {
+            return response()->json([
+                'success' => false,
+                'message' => "Failed to disable Payment",
+                'error' => $response['errors']
+            ], $response['http']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Payment disabled successfully",
+            'data' => $response
+        ], 201);
+    }
+
     public function disablePayment(Int $id)
     {
         $response =  $this->Service->disablePayment($id);
@@ -106,6 +127,25 @@ class PaymentsController extends Controller
     public function payDebt(Int $id)
     {
         $response =  $this->Service->payDebt($id);
+        if(isset($response['errors']))
+        {
+            return response()->json([
+                'success' => false,
+                'message' => "Failed to update pay Debt",
+                'error' => $response['errors']
+            ], $response['http']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Debt paid successfully",
+            'data' => $response
+        ], 201);
+    }
+
+    public function openDebt(Int $id)
+    {
+        $response =  $this->Service->openDebt($id);
         if(isset($response['errors']))
         {
             return response()->json([

@@ -7,7 +7,7 @@ class CardsService
 {
     public function getList()
     {
-        return Cards::select('id', 'value', 'is_positive',)->get();
+        return Cards::select('id', 'name', 'limit', 'turn_day', 'status')->get();
     }
 
     public function getCardById(int $id)
@@ -21,6 +21,8 @@ class CardsService
             'name' => $name,
             'turn_day' => $turnDay,
             'limit' => $limit,
+            'status' => StatusEnum::Active->value,
+            'user_id' => 1,
         ]);
     }
 
