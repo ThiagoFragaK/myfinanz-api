@@ -59,7 +59,7 @@ Route::controller(ExpensesController::class)
             Route::get('/', 'get');
             Route::get('/{id}', 'getExpenseById');
             Route::post('/', 'store');
-            Route::put('/', 'edit');
+            Route::put('/{id}', 'edit');
         }
     );
 
@@ -70,7 +70,7 @@ Route::controller(CardsController::class)
             Route::get('/', 'get');
             Route::get('/{id}', 'getCardById');
             Route::post('/', 'store');
-            Route::put('/', 'edit');
+            Route::put('/{id}', 'edit');
             Route::patch('/disable/{id}', 'disableCard');
             Route::patch('/enable/{id}', 'enableCard');
         }
@@ -84,8 +84,10 @@ Route::controller(PaymentsController::class)
             Route::get('/{id}', 'getPaymentById');
             Route::post('/', 'store');
             Route::put('/', 'edit');
+            Route::patch('/enable/{id}', 'enablePayment');
             Route::patch('/disable/{id}', 'disablePayment');
             Route::patch('/pay/{id}', 'payDebt');
+            Route::patch('/open/{id}', 'openDebt');
         }
     );
 
