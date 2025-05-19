@@ -17,10 +17,12 @@ class SavingsController extends Controller
 
     public function get()
     {
+        $savings = $this->Service->getList();
         return response()->json([
             'success' => true,
             'message' => 'List retrieved successfully',
-            'data' => $this->Service->getList()
+            'data' => $savings['list'],
+            'sum' => $savings['sum']
         ], 200);
     }
 
