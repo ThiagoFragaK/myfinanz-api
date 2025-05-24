@@ -2,65 +2,115 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\IncomeSources;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use App\Http\Controllers\Controller;
+use App\Services\IncomeSourcesService;
 class IncomeSourcesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    private $Service;
+    public function __construct()
     {
-        //
+        $this->Service = new IncomeSourcesService();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function get()
     {
-        //
+        return response()->json([
+            'success' => true,
+            'message' => 'List retrieved successfully',
+            'data' => $this->Service->getList()
+        ], 200);
+    }
+    
+    public function getIncomeSourceById(Int $id) 
+    {
+        return response()->json([
+            'success' => true,
+            'message' => "Income Source retrieved successfully",
+            'data' => $this->Service->getIncomeSourceById($id)
+        ], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $response = $this->Service->createIncomeSource([
+            "name" => $request->get("name"),
+        ]);
+        
+        if(isset($response['errors']))
+        {
+            return response()->json([
+                'success' => false,
+                'message' => "Failed to create Income Type",
+                'error' => $response['errors']
+            ], $response['http']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Income Type created successfully",
+            'data' => $response
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(IncomeSources $incomeSources)
+    public function edit(Int $id, Request $request)
     {
-        //
+        $incomeSource = $this->Service->editIncomeSource(
+            $id,
+            $request->get("name"),
+        );
+        
+        if(isset($income['errors']))
+        {
+            return response()->json([
+                'success' => false,
+                'message' => "Failed to find the Income Source",
+                'errors' => $income['errors']
+            ], $income['http']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Income Source retrieved successfully",
+            'data' => $incomeSource
+        ], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(IncomeSources $incomeSources)
+    public function disableSource(Int $id)
     {
-        //
+        $response =  $this->Service->disableSource($id);
+        if(isset($response['errors']))
+        {
+            return response()->json([
+                'success' => false,
+                'message' => "Failed to disable Income",
+                'error' => $response['errors']
+            ], $response['http']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Income Source disabled successfully",
+            'data' => $response
+        ], 201);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, IncomeSources $incomeSources)
+    public function enableSource(Int $id)
     {
-        //
-    }
+        $response = $this->Service->enableSource($id);
+        if(isset($response['errors']))
+        {
+            return response()->json([
+                'success' => false,
+                'message' => "Failed to enable Income Source",
+                'error' => $response['errors']
+            ], $response['http']);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(IncomeSources $incomeSources)
-    {
-        //
+        return response()->json([
+            'success' => true,
+            'message' => "Income Source enabled successfully",
+            'data' => $response
+        ], 201);
     }
 }

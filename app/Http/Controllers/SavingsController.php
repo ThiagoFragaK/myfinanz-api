@@ -2,65 +2,83 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Savings;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Services\SavingsService;
 
 class SavingsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    private $Service;
+    public function __construct()
     {
-        //
+        $this->Service = new SavingsService();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function get()
     {
-        //
+        $savings = $this->Service->getList();
+        return response()->json([
+            'success' => true,
+            'message' => 'List retrieved successfully',
+            'data' => $savings['list'],
+            'sum' => $savings['sum']
+        ], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function getSavingById(Int $id)
+    {
+        return response()->json([
+            'success' => true,
+            'message' => "Saving retrieved successfully",
+            'data' => $this->Service->getSavingById($id)
+        ], 200);
+    }
+
     public function store(Request $request)
     {
-        //
+        $response = $this->Service->createSaving(
+            $request->get("value"),
+            $request->get("is_positive"),
+        );
+        
+        if(isset($response['errors']))
+        {
+            return response()->json([
+                'success' => false,
+                'message' => "Failed to create Saving",
+                'error' => $response['errors']
+            ], $response['http']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Saving created successfully",
+            'data' => $response
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Savings $savings)
+    public function edit(Int $id, Request $request)
     {
-        //
-    }
+        $payment = $this->Service->editSaving(
+            $id,
+            $request->get("value"),
+            $request->get("is_positive"),
+        );
+        
+        if(isset($income['errors']))
+        {
+            return response()->json([
+                'success' => false,
+                'message' => "Failed to find the Saving",
+                'errors' => $income['errors']
+            ], $income['http']);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Savings $savings)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Savings $savings)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Savings $savings)
-    {
-        //
+        return response()->json([
+            'success' => true,
+            'message' => "Saving retrieved successfully",
+            'data' => $payment
+        ], 200);
     }
 }

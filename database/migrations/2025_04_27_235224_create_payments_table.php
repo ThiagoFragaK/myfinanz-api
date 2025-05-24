@@ -13,9 +13,11 @@ return new class extends Migration
             $table->string('name', 45);
             $table->string('description', 90)->nullable();
             $table->double('value', 12, 2);
+            $table->tinyInteger('const_value')->default(1);
             $table->tinyInteger('status')->default(1);
             $table->tinyInteger('open')->default(1);
-            $table->date('due_date');
+            $table->integer('due_day');
+            $table->date('end_date');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

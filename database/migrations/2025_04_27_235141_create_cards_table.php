@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('cards', function (Blueprint $table) {
             $table->id();
             $table->string('name', 80);
-            $table->date('turn_date');
+            $table->integer('turn_date');
             $table->double('limit')->check('limit <= 999999');
             $table->tinyInteger('status');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
