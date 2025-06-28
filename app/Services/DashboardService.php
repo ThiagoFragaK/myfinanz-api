@@ -21,7 +21,7 @@ class DashboardService
         ->where('month', now()->startOfMonth())
         ->groupBy('month', 'user_id')
         ->orderByDesc('month')
-        ->get();
+        ->first();
     }
 
     public function getTotalSavings()
