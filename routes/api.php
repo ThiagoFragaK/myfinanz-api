@@ -17,7 +17,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::controller(DashboardController::class)
-    ->prefix('incomes')->group(
+    ->prefix('dashboard')->group(
         function () 
         {
             Route::get('/balance', 'getBalance');
