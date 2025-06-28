@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
 use App\Models\Payments;
 use App\Enums\StatusEnum;
 use App\Enums\PaymentsEnum;
@@ -17,6 +18,24 @@ class PaymentsService
     public function getPaymentById(int $id)
     {
         return Payments::find($id);
+    }
+
+    public function getDebtsStatusByMonth()
+    {
+        return Payments::select('id', 'name', 'description', 'value', 'const_value', 'status', 'open', 'due_day')
+            ->whereActive()
+            ->whereBetween('created_at', [
+                Carbon::now()->startOfMonth(),
+                Carbon::now()->endOfMonth()
+            ])
+            ->get()
+            ->map(function ($payment) {
+                $today = Carbon::now()->day;
+                $payment->status_label = ($payment->open && $payment->due_day < $today)
+                    ? 'delayed'
+                    : 'open';
+                return $payment;
+            });
     }
 
     public function createPayment(String $name, String $description, Float $value, Int $constValue, Int $dueDay, String $endDate)
