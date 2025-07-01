@@ -36,7 +36,7 @@ class DashboardController extends Controller
     {
         return response()->json([
             'success' => true,
-            'message' => 'Total expenss retrieved successfully',
+            'message' => 'Total expenses retrieved successfully',
             'data' => $this->Service->getExpenses()
         ], 200);
     }

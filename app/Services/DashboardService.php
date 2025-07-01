@@ -4,6 +4,8 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use App\Models\VBalance;
+use App\Models\Expenses;
+use App\Models\Savings;
 
 class DashboardService
 {
@@ -26,14 +28,40 @@ class DashboardService
 
     public function getTotalSavings()
     {
-        return 10000;
+        $currentTotal = Savings::whereBetween('created_at', [
+            Carbon::now()->startOfMonth(),
+            Carbon::now()->endOfMonth(),
+        ])
+        ->get()
+        ->reduce(function ($carry, $saving) {
+            return $carry + ($saving->is_positive ? $saving->value : -$saving->value);
+        }, 0);
+
+        $previousTotal = Savings::whereBetween('created_at', [
+                Carbon::now()->subMonth()->startOfMonth(),
+                Carbon::now()->subMonth()->endOfMonth(),
+            ])
+            ->get()
+            ->reduce(function ($carry, $saving) {
+                return $carry + ($saving->is_positive ? $saving->value : -$saving->value);
+            }, 0);
+
+        $variation = $previousTotal != 0
+            ? round((($currentTotal - $previousTotal) / $previousTotal) * 100, 2)
+            : null;
+
+        return [
+            "current" => $currentTotal,
+            "previous" => $previousTotal,
+            "variation" => $variation,
+        ];
     }
 
     public function getExpenses()
     {
-        return VBalance::whereNotNull('card_id')
-        ->where('month', Carbon::now()->startOfMonth())
-        ->orderByDesc('month')
+        return Expenses::select("name", "created_at", "value")
+        ->where('created_at', '>=', Carbon::now()->subDays(14))
+        ->orderByDesc('created_at')
         ->get();
     }
 }
