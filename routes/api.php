@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\CardsController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\IncomesController;
 use App\Http\Controllers\IncomeSourcesController;
@@ -15,7 +16,17 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::controller(IncomesController::class)
+Route::controller(DashboardController::class)
+    ->prefix('dashboard')->group(
+        function () 
+        {
+            Route::get('/balance', 'getBalance');
+            Route::get('/savings', 'getTotalSavings');
+            Route::get('/expenses', 'getExpenses');
+        }
+    );
+
+    Route::controller(IncomesController::class)
     ->prefix('incomes')->group(
         function () 
         {
@@ -81,6 +92,7 @@ Route::controller(PaymentsController::class)
         function () 
         {
             Route::get('/', 'get');
+            Route::get('/status', 'getDebtsStatusByMonth');
             Route::get('/{id}', 'getPaymentById');
             Route::post('/', 'store');
             Route::put('/', 'edit');

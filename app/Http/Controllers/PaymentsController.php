@@ -28,8 +28,17 @@ class PaymentsController extends Controller
     {
         return response()->json([
             'success' => true,
-            'message' => "Income Source retrieved successfully",
+            'message' => "Payments retrieved successfully",
             'data' => $this->Service->getPaymentById($id)
+        ], 200);
+    }
+
+    public function getDebtsStatusByMonth()
+    {
+        return response()->json([
+            'success' => true,
+            'message' => "Payments status retrieved successfully",
+            'data' => $this->Service->getDebtsStatusByMonth()
         ], 200);
     }
 
