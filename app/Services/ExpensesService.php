@@ -34,13 +34,14 @@ class ExpensesService
                 'http' => 412
             ];
         }
-
+        
         $expenseId = Expenses::create([
             'name' => $name,
             'description' => $description,
             'card_id' => $cardId,
             'parcel_numbers' => $parcelNumber,
             'value' => $value,
+            'user_id' => 1
         ])->id;
 
         return $this->ParcelsService->createParcelsFromExpense(
