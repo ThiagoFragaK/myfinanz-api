@@ -41,6 +41,7 @@ class ExpensesController extends Controller
             $request->get("card_id"),
             $request->get("parcel_numbers"),
             $request->get("value"),
+            $request->get("created_at"),
         );
         
         if(isset($response['errors']))
@@ -68,6 +69,7 @@ class ExpensesController extends Controller
             $request->get("card_id"),
             $request->get("parcel_numbers"),
             $request->get("value"),
+            $request->get("created_at"),
         );
         
         if(isset($income['errors']))
