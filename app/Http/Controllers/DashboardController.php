@@ -40,4 +40,13 @@ class DashboardController extends Controller
             'data' => $this->Service->getExpenses()
         ], 200);
     }
+
+    public function getMonthlyStats()
+    {
+        return response()->json([
+            'success' => true,
+            'message' => 'Monthly statistics retrieved successfully',
+            'data' => $this->Service->getMonthlyStats()
+        ], 200);
+    }
 }
