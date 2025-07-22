@@ -27,7 +27,7 @@ class DashboardService
     public function getExpenses()
     {
         return Expenses::select("name", "created_at", "value")
-        ->where('created_at', '>=', Carbon::now()->subDays(14))
+        ->where('created_at', '>=', Carbon::now()->startOfMonth())
         ->orderByDesc('created_at')
         ->get();
     }
