@@ -23,6 +23,7 @@ Route::controller(DashboardController::class)
             Route::get('/balance', 'getBalance');
             Route::get('/savings', 'getTotalSavings');
             Route::get('/expenses', 'getExpenses');
+            Route::get('graph/monthly', 'getMonthlyStats');
         }
     );
 
