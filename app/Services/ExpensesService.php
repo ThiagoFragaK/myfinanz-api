@@ -16,7 +16,7 @@ class ExpensesService
 
     public function getList()
     {
-        return Expenses::with('cards')->select('id', 'name', 'description', 'card_id', 'parcel_numbers', 'value')->orderBy("created_at", "desc")->get();
+        return Expenses::with('cards')->select('id', 'name', 'description', 'created_at', 'card_id', 'parcel_numbers', 'value')->orderBy("created_at", "desc")->get();
     }
 
     public function getExpenseById(int $id)
