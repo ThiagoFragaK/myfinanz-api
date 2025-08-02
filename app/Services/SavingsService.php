@@ -9,7 +9,7 @@ class SavingsService
         $savings = Savings::select('id', 'value', 'is_positive', 'created_at')->orderBy('created_at', 'desc')->get();
         return [
             'list' => $savings,
-            'sum' => $this->sumSavings($savings)
+            'sum' => number_format($this->sumSavings($savings), 2, '.', ''),
         ];
     }
 
