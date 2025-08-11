@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Services;
+
+use Carbon\Carbon;
 use App\Models\Expenses;
 use App\Services\CardsService;
 use App\Services\ParcelsService;
@@ -16,7 +18,14 @@ class ExpensesService
 
     public function getList()
     {
-        return Expenses::with('cards')->select('id', 'name', 'description', 'created_at', 'card_id', 'parcel_numbers', 'value')->orderBy("created_at", "desc")->get();
+        return Expenses::with('cards')
+            ->select('id', 'name', 'description', 'date', 'card_id', 'parcel_numbers', 'value')
+            ->orderBy("date", "desc")
+            ->whereBetween('date', [
+                Carbon::now()->startOfMonth(),
+                Carbon::now()->endOfMonth(),
+            ])
+            ->get();
     }
 
     public function getExpenseById(int $id)
@@ -42,7 +51,8 @@ class ExpensesService
             'parcel_numbers' => $parcelNumber,
             'value' => $value,
             'user_id' => 1,
-            'created_at' => $date === null ? now() : $date,
+            'date' => $date === null ? now() : $date,
+            'created_at' => now(),
         ])->id;
 
         return $this->ParcelsService->createParcelsFromExpense(
@@ -70,7 +80,8 @@ class ExpensesService
             'card_id' => $cardId,
             'parcel_numbers' => $parcelNumbers,
             'value' => $value,
-            'created_at' => $date
+            'date' => $date,
+            'updated_at' => now(),
         ]);
 
         return $this->ParcelsService->editParcelsFromExpense(
