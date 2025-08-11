@@ -112,21 +112,21 @@ class DashboardService
 
         $incomes = $groupSumByMonth($incomesRaw);
         $expenses = $groupSumByMonth($expensesRaw);
-        $savings = $groupSumByMonth($savingsRaw, 'value', 'is_positive');
+        // $savings = $groupSumByMonth($savingsRaw, 'value', 'is_positive');
 
         $results = [];
 
         foreach ($monthsList as $month) {
             $income = $incomes[$month] ?? 0;
             $expense = $expenses[$month] ?? 0;
-            $saving = $savings[$month] ?? 0;
+            // $saving = $savings[$month] ?? 0;
             $balance = $income - $expense;
 
             $results[$month] = [
                 'income' => round($income, 2),
                 'expense' => round($expense, 2),
                 'balance' => round($balance, 2),
-                'saving' => round($saving, 2),
+                // 'saving' => round($saving, 2),
             ];
         }
 
