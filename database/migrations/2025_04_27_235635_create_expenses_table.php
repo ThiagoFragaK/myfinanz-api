@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('card_id')->constrained('cards')->onDelete('cascade');
             $table->integer('parcel_numbers')->check('parcel_numbers < 24')->default(1);
             $table->double('value', 12, 2);
+            $table->date('date');
             $table->timestamps();
         });
     }
