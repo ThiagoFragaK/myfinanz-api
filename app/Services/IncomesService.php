@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
 use App\Enums\StatusEnum;
 use App\Models\Incomes;
 use App\Services\IncomeSourcesService;
@@ -13,6 +14,10 @@ class IncomesService
     {
         return Incomes::with(["incomeSources:id,name", "types:id,name"])
             ->select("id", "name", "value", "entry_day", "source_id", "type_id", "status")
+            ->whereBetween('created_at', [
+                Carbon::now()->startOfMonth(),
+                Carbon::now()->endOfMonth(),
+            ])
             ->get();
     }
 
