@@ -26,9 +26,12 @@ class DashboardService
 
     public function getExpenses()
     {
-        return Expenses::select("name", "created_at", "value")
-        ->where('created_at', '>=', Carbon::now()->startOfMonth())
-        ->orderByDesc('created_at')
+        return Expenses::select("name", "date", "value")
+        ->whereBetween('date', [
+            Carbon::now()->startOfMonth(),
+            Carbon::now()->endOfMonth(),
+        ])
+        ->orderByDesc('date')
         ->get();
     }
 
