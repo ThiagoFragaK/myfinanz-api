@@ -4,22 +4,22 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use App\Models\Expenses;
-use App\Services\CardsService;
+use App\Services\PaymentMethodsService;
 use App\Services\ParcelsService;
 class ExpensesService
 {
-    private $CardsService;
+    private $PaymentMethodsService;
     private $ParcelsService;
     public function __construct()
     {
-        $this->CardsService = new CardsService();
+        $this->PaymentMethodsService = new PaymentMethodsService();
         $this->ParcelsService = new ParcelsService();
     }
 
     public function getList()
     {
-        return Expenses::with('cards')
-            ->select('id', 'name', 'description', 'date', 'card_id', 'parcel_numbers', 'value')
+        return Expenses::with('paymentMethods')
+            ->select('id', 'name', 'description', 'date', 'payment_methods_id', 'parcel_numbers', 'value')
             ->orderBy("date", "desc")
             ->whereBetween('date', [
                 Carbon::now()->startOfMonth(),
@@ -33,13 +33,13 @@ class ExpensesService
         return Expenses::find($id);
     }
 
-    public function createExpense(String $name, String $description, Int $cardId, Int $parcelNumber, Float $value, String|Null $date)
+    public function createExpense(String $name, String $description, Int $paymentMethodId, Int $parcelNumber, Float $value, String|Null $date)
     {
-        $card = $this->CardsService->getCardById($cardId);
-        if(is_null($card))
+        $paymentMethod = $this->PaymentMethodsService->getPaymentMethodById($paymentMethodId);
+        if(is_null($paymentMethod))
         {
             return [
-                'errors' => "Failed to retrieve Card",
+                'errors' => "Failed to retrieve Payment method",
                 'http' => 412
             ];
         }
@@ -47,7 +47,7 @@ class ExpensesService
         $expenseId = Expenses::create([
             'name' => $name,
             'description' => $description,
-            'card_id' => $cardId,
+            'payment_methods_id' => $paymentMethodId,
             'parcel_numbers' => $parcelNumber,
             'value' => $value,
             'user_id' => 1,
@@ -59,11 +59,11 @@ class ExpensesService
             $expenseId,
             $parcelNumber,
             $value,
-            $cardId
+            $paymentMethodId
         );
     }
 
-    public function editExpense(Int $id, String $name, String $description, Int $cardId, Int $parcelNumbers, Float $value, String|Null $date)
+    public function editExpense(Int $id, String $name, String $description, Int $paymentMethodId, Int $parcelNumbers, Float $value, String|Null $date)
     {
         $expense = $this->getExpenseById($id);
         if(is_null($expense))
@@ -77,7 +77,7 @@ class ExpensesService
         $expense->update([
             'name' => $name,
             'description' => $description,
-            'card_id' => $cardId,
+            'payment_methods_id' => $paymentMethodId,
             'parcel_numbers' => $parcelNumbers,
             'value' => $value,
             'date' => $date,
@@ -88,7 +88,7 @@ class ExpensesService
             $id,
             $parcelNumbers,
             $value,
-            $cardId
+            $paymentMethodId
         );
     }
 }

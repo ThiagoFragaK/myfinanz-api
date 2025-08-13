@@ -38,7 +38,7 @@ class ExpensesController extends Controller
         $response = $this->Service->createExpense(
             $request->get("name"),
             $request->get("description"),
-            $request->get("card_id"),
+            $request->get("payment_methods_id"),
             $request->get("parcel_numbers"),
             $request->get("value"),
             $request->get("date"),
@@ -66,7 +66,7 @@ class ExpensesController extends Controller
             $id,
             $request->get("name"),
             $request->get("description"),
-            $request->get("card_id"),
+            $request->get("payment_methods_id"),
             $request->get("parcel_numbers"),
             $request->get("value"),
             $request->get("date"),
