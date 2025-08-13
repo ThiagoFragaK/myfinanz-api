@@ -3,13 +3,13 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\CardsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\IncomesController;
 use App\Http\Controllers\IncomeSourcesController;
 use App\Http\Controllers\IncomeTypesController;
 use App\Http\Controllers\PaymentsController;
+use App\Http\Controllers\PaymentMethodsController;
 use App\Http\Controllers\SavingsController;
 
 Route::get('/user', function (Request $request) {
@@ -75,16 +75,16 @@ Route::controller(ExpensesController::class)
         }
     );
 
-Route::controller(CardsController::class)
-    ->prefix('cards')->group(
+Route::controller(PaymentMethodsController::class)
+    ->prefix('payment_methods')->group(
         function () 
         {
             Route::get('/', 'get');
-            Route::get('/{id}', 'getCardById');
+            Route::get('/{id}', 'getPaymentMethodById');
             Route::post('/', 'store');
             Route::put('/{id}', 'edit');
-            Route::patch('/disable/{id}', 'disableCard');
-            Route::patch('/enable/{id}', 'enableCard');
+            Route::patch('/disable/{id}', 'disablePaymentMethod');
+            Route::patch('/enable/{id}', 'enablePaymentMethod');
         }
     );
 

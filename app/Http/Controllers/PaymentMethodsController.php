@@ -3,16 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Cards;
 use App\Http\Controllers\Controller;
-use App\Services\CardsService;
+use App\Services\PaymentMethodsService;
 
-class CardsController extends Controller
+class PaymentMethodsController extends Controller
 {
     private $Service;
     public function __construct()
     {
-        $this->Service = new CardsService();
+        $this->Service = new PaymentMethodsService();
     }
 
     public function get()
@@ -24,19 +23,20 @@ class CardsController extends Controller
         ], 200);
     }
 
-    public function getCardById(Int $id)
+    public function getPaymentMethodById(Int $id)
     {
         return response()->json([
             'success' => true,
-            'message' => "Card retrieved successfully",
-            'data' => $this->Service->getCardById($id)
+            'message' => "Payment method retrieved successfully",
+            'data' => $this->Service->getPaymentMethodById($id)
         ], 200);
     }
 
     public function store(Request $request)
     {
-        $response = $this->Service->createCard(
+        $response = $this->Service->createPaymentMethod(
             $request->get("name"),
+            $request->get("type"),
             $request->get("turn_day"),
             $request->get("limit"),
         );
@@ -45,23 +45,24 @@ class CardsController extends Controller
         {
             return response()->json([
                 'success' => false,
-                'message' => "Failed to create Card",
+                'message' => "Failed to create Payment method",
                 'error' => $response['errors']
             ], $response['http']);
         }
 
         return response()->json([
             'success' => true,
-            'message' => "Card created successfully",
+            'message' => "Payment method created successfully",
             'data' => $response
         ], 201);
     }
 
     public function edit(Int $id, Request $request)
     {
-        $payment = $this->Service->editCard(
+        $payment = $this->Service->editPaymentMethod(
             $id,
             $request->get("name"),
+            $request->get("type"),
             $request->get("turn_day"),
             $request->get("limit"),
         );
@@ -70,52 +71,52 @@ class CardsController extends Controller
         {
             return response()->json([
                 'success' => false,
-                'message' => "Failed to edit the Card",
+                'message' => "Failed to edit the Payment method",
                 'errors' => $income['errors']
             ], $income['http']);
         }
 
         return response()->json([
             'success' => true,
-            'message' => "Card retrieved successfully",
+            'message' => "Payment method retrieved successfully",
             'data' => $payment
         ], 200);
     }
 
-    public function disableCard(Int $id)
+    public function disablePaymentMethod(Int $id)
     {
-        $response =  $this->Service->disableCard($id);
+        $response =  $this->Service->disablePaymentMethod($id);
         if(isset($response['errors']))
         {
             return response()->json([
                 'success' => false,
-                'message' => "Failed to disable Card",
+                'message' => "Failed to disable Payment method",
                 'error' => $response['errors']
             ], $response['http']);
         }
 
         return response()->json([
             'success' => true,
-            'message' => "Card disabled successfully",
+            'message' => "Payment method disabled successfully",
             'data' => $response
         ], 201);
     }
 
-    public function enableCard(Int $id)
+    public function enablePaymentMethod(Int $id)
     {
-        $response = $this->Service->enableCard($id);
+        $response = $this->Service->enablePaymentMethod($id);
         if(isset($response['errors']))
         {
             return response()->json([
                 'success' => false,
-                'message' => "Failed to enable Card",
+                'message' => "Failed to enable Payment method",
                 'error' => $response['errors']
             ], $response['http']);
         }
 
         return response()->json([
             'success' => true,
-            'message' => "Card enable successfully",
+            'message' => "Payment method enable successfully",
             'data' => $response
         ], 201);
     }

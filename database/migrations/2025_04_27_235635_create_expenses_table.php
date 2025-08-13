@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('name', 45);
             $table->string('description', 90)->nullable();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('card_id')->constrained('cards')->onDelete('cascade');
+            $table->foreignId('payment_methods_id')->constrained('payment_methods')->onDelete('cascade');
             $table->integer('parcel_numbers')->check('parcel_numbers < 24')->default(1);
             $table->double('value', 12, 2);
             $table->date('date');

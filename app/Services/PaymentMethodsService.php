@@ -1,34 +1,35 @@
 <?php
 
 namespace App\Services;
-use App\Models\Cards;
+use App\Models\PaymentMethods;
 use App\Enums\StatusEnum;
-class CardsService
+class PaymentMethodsService
 {
     public function getList()
     {
-        return Cards::select('id', 'name', 'limit', 'turn_day', 'status')->get();
+        return PaymentMethods::select('id', 'name', 'type', 'limit', 'turn_day', 'status')->get();
     }
 
-    public function getCardById(int $id)
+    public function getPaymentMethodById(int $id)
     {
-        return Cards::find($id);
+        return PaymentMethods::find($id);
     }
 
-    public function createCard(String $name, Int $turnDay, Float $limit)
+    public function createPaymentMethod(String $name, Int $type, Int $turnDay, Float $limit)
     {
-        return Cards::create([
+        return PaymentMethods::create([
             'name' => $name,
             'turn_day' => $turnDay,
             'limit' => $limit,
+            'type' => $type,
             'status' => StatusEnum::Active->value,
             'user_id' => 1,
         ]);
     }
 
-    public function editCard(Int $id, String $name, Int $turnDay, Float $limit)
+    public function editPaymentMethod(Int $id, String $name, Int $type, Int $turnDay, Float $limit)
     {
-        $card = $this->getCardById($id);
+        $card = $this->getPaymentMethodById($id);
         if(is_null($card))
         {
             return [
@@ -39,14 +40,15 @@ class CardsService
 
         return $card->update([
             'name' => $name,
+            'type' => $type,
             'turn_day' => $turnDay,
             'limit' => $limit,
         ]);
     }
 
-    public function disableCard(Int $id)
+    public function disablePaymentMethod(Int $id)
     {
-        $card = $this->getCardById($id);
+        $card = $this->getPaymentMethodById($id);
         if(is_null($card))
         {
             return [
@@ -62,7 +64,7 @@ class CardsService
 
     public function enableCard(Int $id)
     {
-        $card = $this->getCardById($id);
+        $card = $this->getPaymentMethodById($id);
         if(is_null($card))
         {
             return [
