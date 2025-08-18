@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoriesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -112,5 +113,17 @@ Route::controller(SavingsController::class)
             Route::get('/{id}', 'getSavingById');
             Route::post('/', 'store');
             Route::put('/', 'edit');
+        }
+    );
+
+    Route::controller(CategoriesController::class)
+    ->prefix('categories')->group(
+        function () 
+        {
+            Route::get('/', 'get');
+            Route::get('/{id}', 'getCategoryById');
+            Route::post('/', 'store');
+            Route::put('/', 'edit');
+            Route::delete('/', 'delete');
         }
     );
