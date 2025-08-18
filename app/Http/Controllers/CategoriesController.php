@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Services\CategoriesService;
 
-class CategoryController extends Controller
+class CategoriesController extends Controller
 {
     private $service;
 
