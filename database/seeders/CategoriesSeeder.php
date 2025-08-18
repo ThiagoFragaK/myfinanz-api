@@ -10,7 +10,7 @@ class CategoriesSeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            ['name' => 'Food', 'description' => 'Expenses for food and restaurants', 'icon' => 'Hamburger'],
+            ['name' => 'Food', 'description' => 'Expenses for food and restaurants', 'icon' => 'Utensils'],
             ['name' => 'Transport', 'description' => 'Expenses for transportation', 'icon' => 'Car'],
             ['name' => 'Housing', 'description' => 'Rent, utilities, electricity, water', 'icon' => 'Home'],
             ['name' => 'Health', 'description' => 'Health plans, medications, medical appointments', 'icon' => 'Activity'],
