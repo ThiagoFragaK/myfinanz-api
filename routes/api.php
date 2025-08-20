@@ -123,7 +123,7 @@ Route::controller(SavingsController::class)
             Route::get('/', 'get');
             Route::get('/{id}', 'getCategoryById');
             Route::post('/', 'store');
-            Route::put('/', 'edit');
+            Route::put('/{id}', 'edit');
             Route::delete('/', 'delete');
         }
     );
