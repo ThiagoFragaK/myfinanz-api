@@ -10,9 +10,15 @@ class Expenses extends Model
     use HasFactory;
 
     protected $table = 'expenses';
-	protected $fillable = ['id', 'name', 'description', 'payment_methods_id', 'user_id', 'parcel_number', 'value', 'date', 'created_at'];
+	protected $fillable = ['id', 'name', 'description', 'payment_methods_id', 'category_id', 'user_id', 'parcel_number', 'value', 'date', 'created_at'];
 	protected $guarded = ['id'];
 	protected $hidden = [];
+
+    public function categories()
+	{
+		return $this->hasOne('App\Models\Categories', 'id', 'category_id')
+            ->select('id', 'name', 'icon');
+	}
 
     public function paymentMethods()
 	{
