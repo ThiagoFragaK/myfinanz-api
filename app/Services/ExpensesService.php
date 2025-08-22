@@ -18,8 +18,8 @@ class ExpensesService
 
     public function getList()
     {
-        return Expenses::with('paymentMethods')
-            ->select('id', 'name', 'description', 'date', 'payment_methods_id', 'parcel_numbers', 'value')
+        return Expenses::with(['paymentMethods', 'categories'])
+            ->select('id', 'name', 'description', 'date', 'payment_methods_id', 'category_id', 'parcel_numbers', 'value')
             ->orderBy("date", "desc")
             ->whereBetween('date', [
                 Carbon::now()->startOfMonth(),
@@ -33,7 +33,7 @@ class ExpensesService
         return Expenses::find($id);
     }
 
-    public function createExpense(String $name, String $description, Int $paymentMethodId, Int $parcelNumber, Float $value, String|Null $date)
+    public function createExpense(String $name, String $description, Int $paymentMethodId, Int|Null $categoryId, Int $parcelNumber, Float $value, String|Null $date)
     {
         $paymentMethod = $this->PaymentMethodsService->getPaymentMethodById($paymentMethodId);
         if(is_null($paymentMethod))
@@ -48,6 +48,7 @@ class ExpensesService
             'name' => $name,
             'description' => $description,
             'payment_methods_id' => $paymentMethodId,
+            'category_id' => $categoryId,
             'parcel_numbers' => $parcelNumber,
             'value' => $value,
             'user_id' => 1,
@@ -63,7 +64,7 @@ class ExpensesService
         );
     }
 
-    public function editExpense(Int $id, String $name, String $description, Int $paymentMethodId, Int $parcelNumbers, Float $value, String|Null $date)
+    public function editExpense(Int $id, String $name, String $description, Int $paymentMethodId, Int|Null $categoryId, Int $parcelNumbers, Float $value, String|Null $date)
     {
         $expense = $this->getExpenseById($id);
         if(is_null($expense))
@@ -78,6 +79,7 @@ class ExpensesService
             'name' => $name,
             'description' => $description,
             'payment_methods_id' => $paymentMethodId,
+            'category_id' => $categoryId,
             'parcel_numbers' => $parcelNumbers,
             'value' => $value,
             'date' => $date,

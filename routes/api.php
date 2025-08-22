@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\IncomesController;
@@ -112,5 +113,17 @@ Route::controller(SavingsController::class)
             Route::get('/{id}', 'getSavingById');
             Route::post('/', 'store');
             Route::put('/', 'edit');
+        }
+    );
+
+    Route::controller(CategoriesController::class)
+    ->prefix('categories')->group(
+        function () 
+        {
+            Route::get('/', 'get');
+            Route::get('/{id}', 'getCategoryById');
+            Route::post('/', 'store');
+            Route::put('/{id}', 'edit');
+            Route::delete('/', 'delete');
         }
     );
