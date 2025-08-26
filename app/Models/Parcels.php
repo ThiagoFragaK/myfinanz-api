@@ -10,13 +10,13 @@ class Parcels extends Model
     use HasFactory;
 
     protected $table = 'parcels';
-	protected $fillable = ['id', 'expense_id', 'card_id', 'value', 'data', 'parcel', 'created_at'];
+	protected $fillable = ['id', 'expense_id', 'payment_method_id', 'value', 'data', 'parcel', 'created_at'];
 	protected $guarded = ['id'];
 	protected $hidden = [];
 
-    public function cards()
+    public function paymentMethods()
 	{
-		return $this->hasOne('App\Models\Cards', 'id', 'card_id')
+		return $this->hasOne('App\Models\PaymentMethods', 'id', 'payment_method_id')
             ->select('id', 'name');
 	}
 
