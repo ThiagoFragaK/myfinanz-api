@@ -8,7 +8,7 @@ use App\Models\Parcels;
 
 class ParcelsService
 {
-    public function createParcelsFromExpense(Int $expenseId, Int $parcelNumber, Float $value, Int $cardId)
+    public function createParcelsFromExpense(Int $expenseId, Int $parcelNumber, Float $value, Int $paymentMethodId)
     {
         $parcels = Parcels::where('expense_id', $expenseId)->first();
         if(!is_null($parcels))
@@ -19,20 +19,20 @@ class ParcelsService
             ];
         }
 
-        $parcellist = $this->generateParcels($expenseId, $parcelNumber, $value, $cardId);
-        return Parcels::insert($parcellist);
+        $parcelList = $this->generateParcels($expenseId, $parcelNumber, $value, $paymentMethodId);
+        return Parcels::insert($parcelList);
     }
 
-    public function editParcelsFromExpense(Int $expenseId, Int $parcelNumber, Float $value, Int $cardId)
+    public function editParcelsFromExpense(Int $expenseId, Int $parcelNumber, Float $value, Int $paymentMethodId)
     {
-        return DB::transaction(function () use ($expenseId, $parcelNumber, $value, $cardId) {
+        return DB::transaction(function () use ($expenseId, $parcelNumber, $value, $paymentMethodId) {
             Parcels::where('expense_id', $expenseId)->delete();
-            $parcelList = $this->generateParcels($expenseId, $parcelNumber, $value, $cardId);
+            $parcelList = $this->generateParcels($expenseId, $parcelNumber, $value, $paymentMethodId);
             return Parcels::insert($parcelList);
         });
     }
 
-    private function generateParcels(Int $expenseId, Int $parcelNumber, Float $value, Int $cardId)
+    private function generateParcels(Int $expenseId, Int $parcelNumber, Float $value, Int $paymentMethodId)
     {
         $parcellist = [];
         $now = Carbon::now();
@@ -41,7 +41,7 @@ class ParcelsService
         {
             $parcellist[] = [
                 'expense_id' => $expenseId,
-                'card_id' => $cardId,
+                'payment_method_id' => $paymentMethodId,
                 'value' => $valueByParcel,
                 'date' => $now->copy()->addMonths($i),
                 'parcel' => $i,
