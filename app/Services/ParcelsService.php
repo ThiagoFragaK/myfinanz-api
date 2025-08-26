@@ -41,7 +41,7 @@ class ParcelsService
         {
             $parcellist[] = [
                 'expense_id' => $expenseId,
-                'payment_method_id' => $paymentMethodId,
+                'payment_methods_id' => $paymentMethodId,
                 'value' => $valueByParcel,
                 'date' => $now->copy()->addMonths($i),
                 'parcel' => $i,

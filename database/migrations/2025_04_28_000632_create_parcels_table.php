@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('parcels', function (Blueprint $table) {
             $table->id();
             $table->foreignId('expense_id')->constrained('expenses')->onDelete('cascade');
-            $table->foreignId('payment_method_id')->constrained('payment_methods')->onDelete('cascade');
+            $table->foreignId('payment_methods_id')->constrained('payment_methods')->onDelete('cascade');
             $table->double('value', 12, 2);
             $table->integer('parcel');
             $table->date('date');

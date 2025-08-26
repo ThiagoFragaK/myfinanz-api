@@ -12,7 +12,7 @@ return new class extends Migration
             SELECT
                 COALESCE(i.month, e.month) AS month,
                 COALESCE(i.user_id, e.user_id) AS user_id,
-                e.payment_method_id,
+                e.payment_methods_id,
                 i.type_id AS income_type_id,
                 COALESCE(i.total_income, 0) AS total_income,
                 COALESCE(e.total_expense, 0) AS total_expense
@@ -33,10 +33,10 @@ return new class extends Migration
                     SELECT
                         DATE_TRUNC('month', created_at) AS month,
                         user_id,
-                        payment_method_id,
+                        payment_methods_id,
                         SUM(value) AS total_expense
                     FROM expenses
-                    GROUP BY month, user_id, payment_method_id
+                    GROUP BY month, user_id, payment_methods_id
                 ) e
             ON i.user_id = e.user_id AND i.month = e.month;
         ");
