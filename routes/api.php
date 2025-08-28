@@ -24,7 +24,11 @@ Route::controller(DashboardController::class)
             Route::get('/balance', 'getBalance');
             Route::get('/savings', 'getTotalSavings');
             Route::get('/expenses', 'getExpenses');
-            Route::get('graph/monthly', 'getMonthlyStats');
+            Route::prefix('graph')->group(function () {
+                Route::get('/monthly', 'getMonthlyStats');
+                Route::get('/categories', 'getCategoriesStats');
+                Route::get('/savings', 'getSavingsStats');
+            });
         }
     );
 
