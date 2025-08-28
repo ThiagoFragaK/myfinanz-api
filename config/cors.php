@@ -5,7 +5,7 @@ return [
     'allowed_methods' => ['*'],
     'allowed_origins' => [
         'https://my-finanz.vercel.app/',
-        'http://localhost:3000',
+        'http://localhost:3001',
     ],
     'allowed_headers' => ['*'],
     'exposed_headers' => [],
