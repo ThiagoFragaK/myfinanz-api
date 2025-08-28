@@ -149,4 +149,92 @@ class DashboardService
             'data' => $data,
         ];
     }
+
+    public function getCategoriesStats()
+    {
+        $now = Carbon::now();
+        $months = [];
+        $monthLabels = [];
+        for ($i = 5; $i >= 0; $i--) 
+        {
+            $date = $now->copy()->subMonths($i);
+            $months[] = $date->format('Y-m');
+            $monthLabels[] = $date->format('M');
+        }
+
+        $expenses = Expenses::select('id', 'value', 'category_id', 'created_at')
+            ->with('categories')
+            ->where('created_at', '>=', $now->copy()->subMonths(5)->startOfMonth())
+            ->get();
+
+        $byCategory = [];
+        foreach ($expenses as $expense) 
+        {
+            $monthKey = $expense->created_at->format('Y-m');
+            $categoryName = optional($expense->categories)->name ?? 'Uncategorized';
+
+            if (!isset($byCategory[$categoryName])) 
+            {
+                $byCategory[$categoryName] = array_fill(0, 6, 0.0);
+            }
+
+            $index = array_search($monthKey, $months, true);
+            if ($index !== false) 
+            {
+                $byCategory[$categoryName][$index] = round(
+                    $byCategory[$categoryName][$index] + (float) $expense->value,
+                    2
+                );
+            }
+        }
+
+        $series = [];
+        foreach ($byCategory as $name => $values) {
+            $series[] = [
+                'name' => $name,
+                'data' => array_map(fn ($v) => round((float) $v, 2), $values),
+            ];
+        }
+
+        return [
+            'dates' => $monthLabels,
+            'data'  => array_values($series),
+        ];
+    }
+
+    public function getSavingsStats()
+    {
+        $now = Carbon::now();
+        $months = [];
+        $monthLabels = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $date = $now->copy()->subMonths($i);
+            $months[] = $date->format('Y-m');
+            $monthLabels[] = $date->format('M');
+        }
+
+        // Fetch only needed columns
+        $rows = Savings::select('value', 'is_positive', 'created_at')
+            ->where('created_at', '>=', $now->copy()->subMonths(5)->startOfMonth())
+            ->get();
+
+        // Group and sum in PHP
+        $grouped = $rows->groupBy(function ($item) {
+            return $item->created_at->format('Y-m');
+        })->map(function ($monthRows) {
+            return $monthRows->reduce(function ($carry, $row) {
+                return $carry + ($row->is_positive ? $row->value : -$row->value);
+            }, 0);
+        });
+
+        $monthlyTotals = [];
+        foreach ($months as $month) {
+            $monthlyTotals[] = $grouped->has($month) ? (float) $grouped[$month] : 0;
+        }
+
+        return [
+            'dates' => $monthLabels,
+            'data'  => $monthlyTotals,
+        ];
+    }
 }

@@ -49,4 +49,22 @@ class DashboardController extends Controller
             'data' => $this->Service->getMonthlyStats()
         ], 200);
     }
+
+    public function getCategoriesStats()
+    {
+        return response()->json([
+            'success' => true,
+            'message' => 'Categories statistics retrieved successfully',
+            'data' => $this->Service->getCategoriesStats()
+        ], 200);
+    }
+
+    public function getSavingsStats()
+    {
+        return response()->json([
+            'success' => true,
+            'message' => 'Savings statistics retrieved successfully',
+            'data' => $this->Service->getSavingsStats()
+        ], 200);
+    }
 }
