@@ -1,4 +1,4 @@
-# 💰 Financial App API
+# 💰 MyFinanz API
 
 This is the **backend API** for the Financial App.  
 It provides endpoints to manage **income, expenses, sources, savings, payment methods**, and a **dashboard** that aggregates insights.
