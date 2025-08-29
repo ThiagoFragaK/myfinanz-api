@@ -9,6 +9,7 @@ done
 
 # Run Laravel migrations
 php artisan migrate --force
+php artisan migrate:fresh --seed
 
 # Cache config & routes
 php artisan config:cache || true
