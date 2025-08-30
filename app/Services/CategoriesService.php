@@ -3,14 +3,24 @@
 namespace App\Services;
 
 use App\Models\Categories;
+use Illuminate\Database\Eloquent\Builder;
 
 class CategoriesService
 {
-    public function getList()
+    public function getList(Array $filters)
     {
-        return Categories::select('id', 'name', 'description', 'icon', 'created_at')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $categories = Categories::select('id', 'name', 'description', 'icon', 'created_at');
+        $categories = $this->filterList($categories, $filters);
+        return $categories->orderBy('created_at', 'desc')->get();
+    }
+
+    private function filterList(Builder $list, Array $filters)
+    {
+        if(!is_null($filters["name"]))
+        {
+            $list->where("name", $filters["name"]);
+        }
+        return $list;
     }
 
     public function getCategoryById(int $id)
