@@ -7,16 +7,16 @@ use Illuminate\Database\Eloquent\Builder;
 
 class CategoriesService
 {
-    public function getList(Array $filters)
+    public function getList(Array|Null $filters)
     {
         $categories = Categories::select('id', 'name', 'description', 'icon', 'created_at');
         $categories = $this->filterList($categories, $filters);
         return $categories->orderBy('created_at', 'desc')->get();
     }
 
-    private function filterList(Builder $list, Array $filters)
+    private function filterList(Builder $list, Array|Null $filters)
     {
-        if(!is_null($filters["name"]))
+        if(isset($filters["name"]))
         {
             $list->where("name", $filters["name"]);
         }
