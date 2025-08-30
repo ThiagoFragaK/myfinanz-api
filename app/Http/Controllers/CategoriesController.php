@@ -15,9 +15,9 @@ class CategoriesController extends Controller
         $this->service = new CategoriesService();
     }
 
-    public function get()
+    public function get(Request $request)
     {
-        $categories = $this->service->getList();
+        $categories = $this->service->getList($request->filters);
         return response()->json([
             'success' => true,
             'message' => 'List retrieved successfully',
