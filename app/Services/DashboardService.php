@@ -37,24 +37,24 @@ class DashboardService
 
     public function getTotalSavings()
     {
-        $currentTotal = Savings::get()
-            ->reduce(function ($carry, $saving) {
-                return $carry + ($saving->is_positive ? $saving->value : -$saving->value);
-            }, 0);
+        $savings = Savings::all();
+        
+        $currentTotal = $savings->reduce(function ($carry, $saving) {
+            return $carry + ($saving->is_positive ? $saving->value : -$saving->value);
+        }, 0);
 
-        $previousTotal = Savings::whereBetween('created_at', [
-                Carbon::now()->subMonth()->startOfMonth(),
-                Carbon::now()->subMonth()->endOfMonth(),
-            ])
-            ->get()
+        $previousTotal = $savings
+            ->filter(function ($saving) {
+                return $saving->created_at < Carbon::now()->startOfMonth();
+            })
             ->reduce(function ($carry, $saving) {
                 return $carry + ($saving->is_positive ? $saving->value : -$saving->value);
             }, 0);
 
         if ($currentTotal === 0) {
             return [
-                'current' => $previousTotal,
-                'previous' => $previousTotal,
+                'current'   => $previousTotal,
+                'previous'  => $previousTotal,
                 'variation' => 0,
             ];
         }
@@ -64,8 +64,8 @@ class DashboardService
             : null;
 
         return [
-            'current' => $currentTotal,
-            'previous' => $previousTotal,
+            'current'   => $currentTotal,
+            'previous'  => $previousTotal,
             'variation' => $variation,
         ];
     }
