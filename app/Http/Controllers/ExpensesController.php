@@ -15,12 +15,13 @@ class ExpensesController extends Controller
         $this->Service = new ExpensesService();
     }
 
-    public function get()
+    public function get(Request $request)
     {
+        $expenses = $this->Service->getList($request->filters);
         return response()->json([
             'success' => true,
             'message' => 'List retrieved successfully',
-            'data' => $this->Service->getList()
+            'data' => $expenses
         ], 200);
     }
 

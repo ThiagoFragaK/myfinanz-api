@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Expenses;
 use App\Services\PaymentMethodsService;
 use App\Services\ParcelsService;
+use Illuminate\Database\Eloquent\Builder;
 class ExpensesService
 {
     private $PaymentMethodsService;
@@ -16,16 +17,44 @@ class ExpensesService
         $this->ParcelsService = new ParcelsService();
     }
 
-    public function getList()
+    public function getList(Array|Null $filters)
     {
-        return Expenses::with(['paymentMethods', 'categories'])
-            ->select('id', 'name', 'description', 'date', 'payment_methods_id', 'category_id', 'parcel_numbers', 'value')
-            ->orderBy("date", "desc")
-            ->whereBetween('date', [
+        $expenses = Expenses::with(['paymentMethods', 'categories'])
+            ->select('id', 'name', 'description', 'date', 'payment_methods_id', 'category_id', 'parcel_numbers', 'value');
+        $expenses = $this->filterList($expenses, $filters);
+        return $expenses->orderBy("date", "desc")->get();
+    }
+
+    private function filterList(Builder $list, Array|Null $filters): Builder
+    {
+        if(isset($filters["name"]))
+        {
+            $list->where("name", 'like', "%".$filters["name"]."%");
+        }
+
+        if(isset($filters["category_id"]))
+        {
+            $list->where("category_id", $filters["category_id"]);
+        }
+        
+        if(isset($filters["payment_methods_id"]))
+        {
+            $list->where("payment_methods_id", $filters["payment_methods_id"]);
+        }
+        
+        if(isset($filters["valuesMax"]))
+        {
+            $list->where("value", "<=", $filters["valuesMax"]);
+        }
+
+        if($filters["isCurrentMonth"] == "true")
+        {
+            $list->whereBetween('date', [
                 Carbon::now()->startOfMonth(),
                 Carbon::now()->endOfMonth(),
-            ])
-            ->get();
+            ]);            
+        }
+        return $list;
     }
 
     public function getExpenseById(int $id)
