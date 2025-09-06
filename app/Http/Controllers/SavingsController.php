@@ -15,9 +15,9 @@ class SavingsController extends Controller
         $this->Service = new SavingsService();
     }
 
-    public function get()
+    public function get(Request $request)
     {
-        $savings = $this->Service->getList();
+        $savings = $this->Service->getList($request->filters);
         return response()->json([
             'success' => true,
             'message' => 'List retrieved successfully',

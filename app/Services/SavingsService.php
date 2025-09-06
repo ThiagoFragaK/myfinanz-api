@@ -2,15 +2,51 @@
 
 namespace App\Services;
 use App\Models\Savings;
+use Illuminate\Database\Eloquent\Builder;
 class SavingsService
 {
-    public function getList()
+    public function getList(Array|Null $filters)
     {
-        $savings = Savings::select('id', 'value', 'is_positive', 'created_at')->orderBy('created_at', 'desc')->get();
+        $savings = Savings::select('value', 'is_positive')->get();
+        $sum = $this->sumSavings($savings);
+
+        $savingsList = Savings::select('id', 'value', 'is_positive', 'created_at');
+        $savingsList = $this->filterList($savingsList, $filters);
+
         return [
-            'list' => $savings,
-            'sum' => number_format($this->sumSavings($savings), 2, '.', ''),
+            'list' => $savingsList->orderBy('created_at', 'desc')->get(),
+            'sum' => number_format($sum, 2, '.', ''),
         ];
+    }
+
+    private function filterList(Builder $list, Array|Null $filters)
+    {
+        if(isset($filters["date"]))
+        {
+            $dates = $filters["date"];
+            if(isset($dates["min"]))
+            {
+                $list->where('created_at', '>=', $dates['min']);
+            }
+            if(isset($dates["max"]))
+            {
+                $list->where('created_at', '<=', $dates['max']);
+            }
+        }
+
+        if(isset($filters["value"]))
+        {
+            $values = $filters["value"];
+            if(isset($values["min"]))
+            {
+                $list->where("value", "<=", $values["min"]);
+            }
+            if(isset($values["max"]))
+            {
+                $list->where("value", "<=", $values["max"]);
+            }
+        }
+        return $list;
     }
 
     public function getSavingById(int $id)
