@@ -22,7 +22,7 @@ class ExpensesService
         $expenses = Expenses::with(['paymentMethods', 'categories'])
             ->select('id', 'name', 'description', 'date', 'payment_methods_id', 'category_id', 'parcel_numbers', 'value');
         $expenses = $this->filterList($expenses, $filters);
-        return $expenses->orderBy("date", "desc")->get();
+        return $expenses->orderBy("date", "desc")->paginate(10);
     }
 
     private function filterList(Builder $list, Array|Null $filters): Builder

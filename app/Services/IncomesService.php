@@ -18,7 +18,7 @@ class IncomesService
                 Carbon::now()->startOfMonth(),
                 Carbon::now()->endOfMonth(),
             ])
-            ->get();
+            ->paginate(10);
     }
 
     public function getIncomeById(Int $id)

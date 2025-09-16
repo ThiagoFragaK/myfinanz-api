@@ -6,7 +6,7 @@ class IncomeTypesService
 {
     public function getList()
     {
-        return IncomeTypes::select('id', 'name')->get();
+        return IncomeTypes::select('id', 'name')->paginate(10);
     }
 
     public function getIncomeTypeById(int $id)
