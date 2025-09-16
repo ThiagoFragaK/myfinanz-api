@@ -11,7 +11,12 @@ class CategoriesService
     {
         $categories = Categories::select('id', 'name', 'description', 'icon', 'created_at');
         $categories = $this->filterList($categories, $filters);
-        return $categories->orderBy('created_at', 'desc')->get();
+        return $categories->orderBy('created_at', 'desc')->paginate(10);
+    }
+
+    public function getCategoriesList()
+    {
+        return Categories::select('id', 'name')->orderBy('created_at', 'desc')->get();
     }
 
     private function filterList(Builder $list, Array|Null $filters)

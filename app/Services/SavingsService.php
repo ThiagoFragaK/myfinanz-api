@@ -14,7 +14,7 @@ class SavingsService
         $savingsList = $this->filterList($savingsList, $filters);
 
         return [
-            'list' => $savingsList->orderBy('created_at', 'desc')->get(),
+            'list' => $savingsList->orderBy('created_at', 'desc')->paginate(10),
             'sum' => number_format($sum, 2, '.', ''),
         ];
     }

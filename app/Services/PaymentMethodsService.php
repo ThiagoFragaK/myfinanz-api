@@ -7,7 +7,13 @@ class PaymentMethodsService
 {
     public function getList()
     {
-        return PaymentMethods::select('id', 'name', 'type', 'limit', 'turn_day', 'status')->get();
+        return PaymentMethods::select('id', 'name', 'type', 'limit', 'turn_day', 'status')
+            ->paginate(10);
+    }
+
+    public function getMethodsList()
+    {
+        return PaymentMethods::select('id', 'name')->get();
     }
 
     public function getPaymentMethodById(int $id)

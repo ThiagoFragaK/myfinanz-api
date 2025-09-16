@@ -23,6 +23,15 @@ class IncomeTypesController extends Controller
         ], 200);
     }
 
+    public function getList()
+    {
+        return response()->json([
+            'success' => true,
+            'message' => 'List retrieved successfully',
+            'data' => $this->Service->getTypesList()
+        ], 200);
+    }
+
     public function getIncomeTypeById(Int $id)
     {
         return response()->json([

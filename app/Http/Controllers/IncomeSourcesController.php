@@ -21,6 +21,15 @@ class IncomeSourcesController extends Controller
             'data' => $this->Service->getList()
         ], 200);
     }
+
+    public function getList()
+    {
+        return response()->json([
+            'success' => true,
+            'message' => 'List retrieved successfully',
+            'data' => $this->Service->getSourcesList()
+        ], 200);
+    }
     
     public function getIncomeSourceById(Int $id) 
     {

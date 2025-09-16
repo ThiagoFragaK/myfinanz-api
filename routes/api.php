@@ -50,6 +50,7 @@ Route::controller(IncomeTypesController::class)
         function () 
         {
             Route::get('/', 'get');
+            Route::get('/list', 'getList');
             Route::get('/{id}', 'getIncomeTypeById');
             Route::post('/', 'store');
             Route::put('/{id}', 'edit');
@@ -61,6 +62,7 @@ Route::controller(IncomeSourcesController::class)
         function () 
         {
             Route::get('/', 'get');
+            Route::get('/list', 'getList');
             Route::get('/{id}', 'getIncomeSourceById');
             Route::post('/', 'store');
             Route::put('/{id}', 'edit');
@@ -85,6 +87,7 @@ Route::controller(PaymentMethodsController::class)
         function () 
         {
             Route::get('/', 'get');
+            Route::get('/list', 'getList');
             Route::get('/{id}', 'getPaymentMethodById');
             Route::post('/', 'store');
             Route::put('/{id}', 'edit');
@@ -125,6 +128,7 @@ Route::controller(SavingsController::class)
         function () 
         {
             Route::get('/', 'get');
+            Route::get('/list', 'getList');
             Route::get('/{id}', 'getCategoryById');
             Route::post('/', 'store');
             Route::put('/{id}', 'edit');

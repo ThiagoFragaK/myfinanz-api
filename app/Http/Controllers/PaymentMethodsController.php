@@ -23,6 +23,15 @@ class PaymentMethodsController extends Controller
         ], 200);
     }
 
+    public function getList()
+    {
+        return response()->json([
+            'success' => true,
+            'message' => 'List retrieved successfully',
+            'data' => $this->Service->getMethodsList()
+        ], 200);
+    }
+
     public function getPaymentMethodById(Int $id)
     {
         return response()->json([
