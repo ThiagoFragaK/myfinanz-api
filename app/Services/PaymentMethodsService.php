@@ -11,6 +11,11 @@ class PaymentMethodsService
             ->paginate(10);
     }
 
+    public function getMethodsList()
+    {
+        return PaymentMethods::select('id', 'name')->get();
+    }
+
     public function getPaymentMethodById(int $id)
     {
         return PaymentMethods::find($id);
