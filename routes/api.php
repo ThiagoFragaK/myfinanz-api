@@ -50,6 +50,7 @@ Route::controller(IncomeTypesController::class)
         function () 
         {
             Route::get('/', 'get');
+            Route::get('/list', 'getList');
             Route::get('/{id}', 'getIncomeTypeById');
             Route::post('/', 'store');
             Route::put('/{id}', 'edit');
@@ -61,6 +62,7 @@ Route::controller(IncomeSourcesController::class)
         function () 
         {
             Route::get('/', 'get');
+            Route::get('/list', 'getList');
             Route::get('/{id}', 'getIncomeSourceById');
             Route::post('/', 'store');
             Route::put('/{id}', 'edit');
