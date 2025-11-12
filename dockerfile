@@ -21,12 +21,15 @@ COPY . .
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Expose Render port
+# Expose Railway port
 EXPOSE 10000
 
 # Copy deploy script
 COPY deploy.sh /deploy.sh
 RUN chmod +x /deploy.sh
+
+# Ensure Laravel has an APP_KEY before starting
+RUN php artisan key:generate || true
 
 # Start deploy script
 CMD ["/deploy.sh"]
