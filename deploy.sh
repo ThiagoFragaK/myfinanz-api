@@ -7,12 +7,8 @@ until php -r "new PDO('pgsql:host=${DB_HOST};port=${DB_PORT};dbname=${DB_DATABAS
   sleep 3
 done
 
-# Reset DB and run seeds
-php artisan migrate:fresh --seed --force
-
-# Cache config & routes
+php artisan migrate --force
 php artisan config:cache || true
 php artisan route:cache || true
 
-# Start Laravel built-in server on Render port
-php artisan serve --host=0.0.0.0 --port=${PORT}
+php-fpm
