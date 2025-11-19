@@ -1,32 +1,53 @@
-FROM php:8.2-fpm
+# ============================
+# 1) Build Stage
+# ============================
+FROM composer:2 AS build
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    libonig-dev \
-    curl \
-    libpq-dev \
-    && docker-php-ext-install mbstring pdo pdo_pgsql
+WORKDIR /app
 
-# Install Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Copia composer.json e composer.lock para instalar dependências
+COPY composer.json composer.lock ./
 
-# Set working directory
-WORKDIR /var/www/html
+RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
 
-# Copy project files
+# Copia o restante do projeto
 COPY . .
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Otimiza autoload
+RUN composer dump-autoload --optimize
 
-# Expose Render port
-EXPOSE 10000
+# ============================
+# 2) Runtime Stage
+# ============================
+FROM php:8.2-fpm
 
-# Copy deploy script
-COPY deploy.sh /deploy.sh
-RUN chmod +x /deploy.sh
+WORKDIR /var/www/html
 
-# Start deploy script
-CMD ["/deploy.sh"]
+# Instala extensões PHP necessárias
+RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    unzip \
+    git \
+    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copia o projeto do build
+COPY --from=build /app /var/www/html
+
+# Copia o entrypoint
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Define permissões
+RUN chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
+# Expõe a porta do PHP-FPM
+EXPOSE 9000
+
+# Usa entrypoint para rodar migrations
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["php-fpm"]
