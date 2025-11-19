@@ -5,16 +5,18 @@ FROM composer:2 AS build
 
 WORKDIR /app
 
-# Copia composer.json e composer.lock para instalar dependências
+# Copia apenas composer.json e composer.lock para usar cache do composer
 COPY composer.json composer.lock ./
 
-RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+# Instala dependências sem rodar scripts (ainda não temos artisan)
+RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader --no-scripts
 
-# Copia o restante do projeto
+# Agora copia o restante do projeto
 COPY . .
 
-# Otimiza autoload
+# Otimiza autoload e roda package discover agora que artisan existe
 RUN composer dump-autoload --optimize
+RUN php artisan package:discover
 
 # ============================
 # 2) Runtime Stage
