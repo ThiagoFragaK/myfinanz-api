@@ -1,54 +1,75 @@
-# ============================
-# 1) Build Stage
-# ============================
-FROM composer:2 AS build
+FROM php:8.3.3-apache
 
-WORKDIR /app
+RUN apt-get update
 
-# Copia apenas composer.json e composer.lock para usar cache
-COPY composer.json composer.lock ./
+RUN apt-get install --yes --force-yes cron g++ gettext libicu-dev openssl libc-client-dev libkrb5-dev libgd-dev libmcrypt-dev bzip2 libbz2-dev libtidy-dev libcurl4-openssl-dev libz-dev libmemcached-dev libxslt-dev
 
-# Instala dependências sem rodar scripts
-RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader --no-scripts
+RUN apt-get update && apt-get install -y \
+    cron g++ gettext libicu-dev openssl libc-client-dev libkrb5-dev libgd-dev libmcrypt-dev bzip2 libbz2-dev \
+    libtidy-dev libcurl4-openssl-dev libz-dev libmemcached-dev libxslt-dev \
+    libonig-dev libpq-dev libxml2-dev libpng-dev libzip-dev libfreetype6-dev \
+    libjpeg62-turbo-dev libmagickwand-dev libgmp-dev zip npm
 
-# Copia o restante do projeto
-COPY . .
+RUN a2enmod rewrite
 
-# Otimiza autoload e agora roda scripts
-RUN composer dump-autoload --optimize
-RUN php artisan package:discover
+RUN docker-php-ext-install \
+    pcntl \
+    zip \
+    pdo_pgsql \
+    pgsql \
+    intl \
+    gd \
+    gmp \
+    pdo \
+    bcmath
 
-# ============================
-# 2) Runtime Stage
-# ============================
-FROM php:8.2-fpm
+RUN docker-php-ext-configure gd --with-freetype=/usr --with-jpeg=/usr
+
+RUN docker-php-ext-install gd
+
+RUN a2enmod headers
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+COPY ./ /var/www/html/
+
+COPY .env.production /var/www/html/.env
+
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 WORKDIR /var/www/html
 
-# Instala extensões PHP necessárias (AGORA COM POSTGRES)
-RUN apt-get update && apt-get install -y \
-    libzip-dev \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    unzip \
-    git \
-    libpq-dev \
-    && docker-php-ext-install pdo_pgsql pgsql mbstring zip exif pcntl bcmath gd \
-    && rm -rf /var/lib/apt/lists/*
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# Copia o projeto do build
-COPY --from=build /app /var/www/html
+RUN echo "memory_limit=4096M" > /usr/local/etc/php/conf.d/php.ini
+RUN echo "upload_max_filesize=50M" >> /usr/local/etc/php/conf.d/php.ini
+RUN echo "max_input_time=512" >> /usr/local/etc/php/conf.d/php.ini
+RUN echo "max_input_vars=5000" >> /usr/local/etc/php/conf.d/php.ini
+RUN echo "max_execution_time=300" >> /usr/local/etc/php/conf.d/php.ini
+RUN echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/php.ini
+RUN echo "display_errors=On" >> /usr/local/etc/php/conf.d/php.ini
+RUN echo "log_errors=On" >> /usr/local/etc/php/conf.d/php.ini
+RUN echo "zend_extension=opcache" >> /usr/local/etc/php/conf.d/php.ini
+RUN echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/php.ini
+RUN echo "opcache.memory_consumption=256" >> /usr/local/etc/php/conf.d/php.ini
+RUN echo "opcache.interned_strings_buffer=8" >> /usr/local/etc/php/conf.d/php.ini
+RUN echo "opcache.max_accelerated_files=10000" >> /usr/local/etc/php/conf.d/php.ini
+RUN echo "opcache.revalidate_freq=60" >> /usr/local/etc/php/conf.d/php.ini
+RUN echo "opcache.save_comments=1" >> /usr/local/etc/php/conf.d/php.ini
+RUN echo "opcache.enable_cli=1" >> /usr/local/etc/php/conf.d/php.ini
 
-# Copia o entrypoint
-COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+RUN composer install --no-interaction --optimize-autoloader --no-dev
 
-# Permissões corretas
-RUN chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache
+RUN npm install
 
-EXPOSE 9000
+RUN npm run build
 
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["php-fpm"]
+RUN chmod -R 777 /var/www/html/storage
+
+RUN php artisan storage:link
+
+RUN php artisan optimize
