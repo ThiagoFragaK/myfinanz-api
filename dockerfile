@@ -33,7 +33,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 COPY ./ /var/www/html/
 
-COPY ./.env.example /var/www/html/.env
+COPY .env.example /var/www/html/.env
 
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
