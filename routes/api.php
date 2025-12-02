@@ -12,6 +12,9 @@ use App\Http\Controllers\IncomeTypesController;
 use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\PaymentMethodsController;
 use App\Http\Controllers\SavingsController;
+use App\Http\Controllers\AuthenticationController;
+
+Route::post('/login', [AuthenticationController::class, 'login']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
