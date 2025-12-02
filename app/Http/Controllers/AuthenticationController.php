@@ -40,4 +40,14 @@ class AuthenticationController extends Controller
             'data' => $response
         ], 200);
     }
+
+    public function logout(Request $request)
+    {
+        $response = $this->service->logout($request->user());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Logged out successfully'
+        ], 200);
+    }
 }
