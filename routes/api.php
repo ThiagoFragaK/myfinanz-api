@@ -21,6 +21,18 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+Route::controller(UsersController::class)
+    ->prefix('users')->group(
+        function () {
+            Route::get('/', 'get');
+            Route::get('/list', 'getList');
+            Route::get('/{id}', 'getUserById');
+            Route::post('/', 'store');
+            Route::put('/{id}', 'edit');
+            Route::delete('/{id}', 'delete');
+        }
+    );
+
 Route::controller(DashboardController::class)
     ->prefix('dashboard')->group(
         function () 
