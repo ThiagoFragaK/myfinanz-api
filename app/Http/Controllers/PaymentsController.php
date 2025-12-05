@@ -15,12 +15,12 @@ class PaymentsController extends Controller
         $this->Service = new PaymentsService();
     }
 
-    public function get()
+    public function get(Request $request)
     {
         return response()->json([
             'success' => true,
             'message' => 'List retrieved successfully',
-            'data' => $this->Service->getList()
+            'data' => $this->Service->getList($request->user()->id)
         ], 200);
     }
 
@@ -33,18 +33,19 @@ class PaymentsController extends Controller
         ], 200);
     }
 
-    public function getDebtsStatusByMonth()
+    public function getDebtsStatusByMonth(Request $request)
     {
         return response()->json([
             'success' => true,
             'message' => "Payments status retrieved successfully",
-            'data' => $this->Service->getDebtsStatusByMonth()
+            'data' => $this->Service->getDebtsStatusByMonth($request->user()->id)
         ], 200);
     }
 
     public function store(Request $request)
     {
         $response = $this->Service->createPayment(
+            $request->user()->id,
             $request->get("name"),
             $request->get("description"),
             $request->get("value"),

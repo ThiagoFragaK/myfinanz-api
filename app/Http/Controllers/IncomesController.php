@@ -15,12 +15,12 @@ class IncomesController extends Controller
         $this->Service = new IncomesService();
     }
 
-    public function get()
+    public function get(Request $request)
     {
         return response()->json([
             'success' => true,
             'message' => 'List retrieved successfully',
-            'data' => $this->Service->getList()
+            'data' => $this->Service->getList($request->user()->id)
         ], 200);
     }
 
@@ -36,6 +36,7 @@ class IncomesController extends Controller
     public function store(Request $request)
     {
         $response = $this->Service->createIncome(
+            $request->user()->id,
             $request->get('name'),
             $request->get('value'),
             $request->get('entry_day'),

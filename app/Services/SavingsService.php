@@ -5,12 +5,12 @@ use App\Models\Savings;
 use Illuminate\Database\Eloquent\Builder;
 class SavingsService
 {
-    public function getList(Array|Null $filters)
+    public function getList(Int $userId, Array|Null $filters)
     {
-        $savings = Savings::select('value', 'is_positive')->get();
+        $savings = Savings::where('user_id', $userId)->select('value', 'is_positive')->get();
         $sum = $this->sumSavings($savings);
 
-        $savingsList = Savings::select('id', 'value', 'is_positive', 'created_at');
+        $savingsList = Savings::where('user_id', $userId)->select('id', 'value', 'is_positive', 'created_at');
         $savingsList = $this->filterList($savingsList, $filters);
 
         return [
@@ -54,12 +54,12 @@ class SavingsService
         return Savings::find($id);
     }
 
-    public function createSaving(Float $value, Bool $isPositive)
+    public function createSaving(Int $userId, Float $value, Bool $isPositive)
     {
         return Savings::create([
             'value' => $value,
             'is_positive' => $isPositive,
-            'user_id' => 1,
+            'user_id' => $userId,
         ]);
     }
 

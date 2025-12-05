@@ -5,15 +5,16 @@ use App\Models\PaymentMethods;
 use App\Enums\StatusEnum;
 class PaymentMethodsService
 {
-    public function getList()
+    public function getList(Int $userId)
     {
         return PaymentMethods::select('id', 'name', 'type', 'limit', 'turn_day', 'status')
+            ->where('user_id', $userId)
             ->paginate(10);
     }
 
-    public function getMethodsList()
+    public function getMethodsList(Int $userId)
     {
-        return PaymentMethods::select('id', 'name')->get();
+        return PaymentMethods::where('user_id', $userId)->select('id', 'name')->get();
     }
 
     public function getPaymentMethodById(int $id)
@@ -21,7 +22,7 @@ class PaymentMethodsService
         return PaymentMethods::find($id);
     }
 
-    public function createPaymentMethod(String $name, Int $type, Int $turnDay, Float $limit)
+    public function createPaymentMethod(Int $userId, String $name, Int $type, Int $turnDay, Float $limit)
     {
         return PaymentMethods::create([
             'name' => $name,
@@ -29,7 +30,7 @@ class PaymentMethodsService
             'limit' => $limit,
             'type' => $type,
             'status' => StatusEnum::Active->value,
-            'user_id' => 1,
+            'user_id' => $userId,
         ]);
     }
 

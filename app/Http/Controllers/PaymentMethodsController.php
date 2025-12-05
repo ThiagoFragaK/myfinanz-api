@@ -14,21 +14,21 @@ class PaymentMethodsController extends Controller
         $this->Service = new PaymentMethodsService();
     }
 
-    public function get()
+    public function get(Request $request)
     {
         return response()->json([
             'success' => true,
             'message' => 'List retrieved successfully',
-            'data' => $this->Service->getList()
+            'data' => $this->Service->getList($request->user()->id)
         ], 200);
     }
 
-    public function getList()
+    public function getList(Request $request)
     {
         return response()->json([
             'success' => true,
             'message' => 'List retrieved successfully',
-            'data' => $this->Service->getMethodsList()
+            'data' => $this->Service->getMethodsList($request->user()->id)
         ], 200);
     }
 
@@ -44,6 +44,7 @@ class PaymentMethodsController extends Controller
     public function store(Request $request)
     {
         $response = $this->Service->createPaymentMethod(
+            $request->user()->id,
             $request->get("name"),
             $request->get("type"),
             $request->get("turn_day"),
