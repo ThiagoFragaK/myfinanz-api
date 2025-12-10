@@ -17,9 +17,10 @@ class ExpensesService
         $this->ParcelsService = new ParcelsService();
     }
 
-    public function getList(Array|Null $filters)
+    public function getList(Int $userId, Array|Null $filters)
     {
         $expenses = Expenses::with(['paymentMethods', 'categories'])
+            ->where('user_id', $userId)
             ->select('id', 'name', 'description', 'date', 'payment_methods_id', 'category_id', 'parcel_numbers', 'value');
         $expenses = $this->filterList($expenses, $filters);
         return $expenses->orderBy("date", "desc")->paginate(10);
@@ -62,7 +63,7 @@ class ExpensesService
         return Expenses::find($id);
     }
 
-    public function createExpense(String $name, String $description, Int $paymentMethodId, Int|Null $categoryId, Int $parcelNumber, Float $value, String|Null $date)
+    public function createExpense(Int $userId, String $name, String $description, Int $paymentMethodId, Int|Null $categoryId, Int $parcelNumber, Float $value, String|Null $date)
     {
         $paymentMethod = $this->PaymentMethodsService->getPaymentMethodById($paymentMethodId);
         if(is_null($paymentMethod))
@@ -80,7 +81,7 @@ class ExpensesService
             'category_id' => $categoryId,
             'parcel_numbers' => $parcelNumber,
             'value' => $value,
-            'user_id' => 1,
+            'user_id' => $userId,
             'date' => $date === null ? now() : $date,
             'created_at' => now(),
         ])->id;

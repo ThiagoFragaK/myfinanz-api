@@ -9,11 +9,11 @@ use App\Models\Savings;
 
 class DashboardService
 {
-    public function getBalance()
+    public function getBalance(Int $userId)
     {
-        $expenses = $this->getExpenses()->sum("value");
+        $expenses = $this->getExpenses($userId)->sum("value");
         $incomes = Incomes::select("value", "created_at")
-            ->where("user_id", 1)
+            ->where("user_id", $userId)
             ->where('created_at', '>=', Carbon::now()->startOfMonth())
             ->sum("value");
 
@@ -24,9 +24,10 @@ class DashboardService
         ];
     }
 
-    public function getExpenses()
+    public function getExpenses(Int $userId)
     {
         return Expenses::select("name", "date", "value")
+        ->where('user_id', $userId)
         ->whereBetween('date', [
             Carbon::now()->startOfMonth(),
             Carbon::now()->endOfMonth(),
@@ -35,9 +36,9 @@ class DashboardService
         ->get();
     }
 
-    public function getTotalSavings()
+    public function getTotalSavings(Int $userId)
     {
-        $savings = Savings::all();
+        $savings = Savings::where('user_id', $userId)->get();
         
         $currentTotal = $savings->reduce(function ($carry, $saving) {
             return $carry + ($saving->is_positive ? $saving->value : -$saving->value);
@@ -70,17 +71,20 @@ class DashboardService
         ];
     }
 
-    public function getMonthlyStats()
+    public function getMonthlyStats(Int $userId)
     {
         $incomesRaw = Incomes::select('value', 'created_at', 'user_id')
+            ->where('user_id', $userId)
             ->where('created_at', '>=', Carbon::now()->subMonths(5)->startOfMonth())
             ->get();
 
         $expensesRaw = Expenses::select('value', 'created_at', 'user_id')
+            ->where('user_id', $userId)
             ->where('created_at', '>=', Carbon::now()->subMonths(5)->startOfMonth())
             ->get();
 
         $savingsRaw = Savings::select('value', 'is_positive', 'created_at', 'user_id')
+            ->where('user_id', $userId)
             ->where('created_at', '>=', Carbon::now()->subMonths(5)->startOfMonth())
             ->get();
 
@@ -150,7 +154,7 @@ class DashboardService
         ];
     }
 
-    public function getCategoriesStats()
+    public function getCategoriesStats(Int $userId)
     {
         $now = Carbon::now();
         $months = [];
@@ -164,6 +168,7 @@ class DashboardService
 
         $expenses = Expenses::select('id', 'value', 'category_id', 'created_at')
             ->with('categories')
+            ->where('user_id', $userId)
             ->where('created_at', '>=', $now->copy()->subMonths(5)->startOfMonth())
             ->get();
 
@@ -202,7 +207,7 @@ class DashboardService
         ];
     }
 
-    public function getSavingsStats()
+    public function getSavingsStats(Int $userId)
     {
         $now = Carbon::now();
         $months = [];
@@ -215,6 +220,7 @@ class DashboardService
 
         // Fetch only needed columns
         $rows = Savings::select('value', 'is_positive', 'created_at')
+            ->where('user_id', $userId)
             ->where('created_at', '>=', $now->copy()->subMonths(5)->startOfMonth())
             ->get();
 

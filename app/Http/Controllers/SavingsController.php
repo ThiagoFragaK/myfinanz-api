@@ -17,7 +17,7 @@ class SavingsController extends Controller
 
     public function get(Request $request)
     {
-        $savings = $this->Service->getList($request->filters);
+        $savings = $this->Service->getList($request->user()->id, $request->filters);
         return response()->json([
             'success' => true,
             'message' => 'List retrieved successfully',
@@ -38,6 +38,7 @@ class SavingsController extends Controller
     public function store(Request $request)
     {
         $response = $this->Service->createSaving(
+            $request->user()->id,
             $request->get("value"),
             $request->get("is_positive"),
         );

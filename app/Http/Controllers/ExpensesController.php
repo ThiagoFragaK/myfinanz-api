@@ -17,7 +17,7 @@ class ExpensesController extends Controller
 
     public function get(Request $request)
     {
-        $expenses = $this->Service->getList($request->filters);
+        $expenses = $this->Service->getList($request->user()->id, $request->filters);
         return response()->json([
             'success' => true,
             'message' => 'List retrieved successfully',
@@ -37,6 +37,7 @@ class ExpensesController extends Controller
     public function store(Request $request)
     {
         $response = $this->Service->createExpense(
+            $request->user()->id,
             $request->get("name"),
             $request->get("description"),
             $request->get("payment_methods_id"),

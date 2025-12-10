@@ -8,9 +8,10 @@ use App\Enums\StatusEnum;
 use App\Enums\PaymentsEnum;
 class PaymentsService
 {
-    public function getList()
+    public function getList(Int $userId)
     {
         return Payments::select('id', 'name', 'description', 'value', 'const_value', 'status', 'open', 'due_day', 'updated_at')
+            ->where('user_id', $userId)
             ->orderBy('created_at', 'desc')
             ->get();
     }
@@ -20,9 +21,10 @@ class PaymentsService
         return Payments::find($id);
     }
 
-    public function getDebtsStatusByMonth()
+    public function getDebtsStatusByMonth(Int $userId)
     {
         return Payments::select('id', 'name', 'description', 'value', 'const_value', 'status', 'open', 'due_day')
+            ->where('user_id', $userId)
             ->whereActive()
             ->whereBetween('created_at', [
                 Carbon::now()->startOfMonth(),
@@ -38,7 +40,7 @@ class PaymentsService
             });
     }
 
-    public function createPayment(String $name, String $description, Float $value, Int $constValue, Int $dueDay, String $endDate)
+    public function createPayment(Int $userId, String $name, String $description, Float $value, Int $constValue, Int $dueDay, String $endDate)
     {
         return Payments::create([
             'name' => $name,
@@ -49,7 +51,7 @@ class PaymentsService
             'open' => PaymentsEnum::Open->value,
             'const_value' => $constValue,
             'end_date' => $endDate,
-            'user_id' => 1,
+            'user_id' => $userId,
         ]);
     }
 
