@@ -13,6 +13,7 @@ use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\PaymentMethodsController;
 use App\Http\Controllers\SavingsController;
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\UsersController;
 
 Route::post('/login', [AuthenticationController::class, 'login']);
 
@@ -22,6 +23,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+
+    Route::controller(UsersController::class)
+    ->prefix('users')->group(
+        function () {
+                Route::post('password', 'updatePassword');
+                Route::put('settings', 'updateSettings');
+            }
+        );
 
     Route::controller(UsersController::class)
         ->prefix('users')->group(
