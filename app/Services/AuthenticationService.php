@@ -21,8 +21,15 @@ class AuthenticationService
         return [
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'user' => $user
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'language' => $user->language,
+                'currency' => $user->currency,
+            ]
         ];
+
     }
 
     public function logout($user)

@@ -85,4 +85,48 @@ class UsersService
         $user->delete();
         return ['success' => true];
     }
+
+    public function updatePassword(int $userId, string $currentPassword, string $newPassword)
+    {
+        $user = $this->getUserById($userId);
+
+        if (is_null($user)) {
+            return [
+                'errors' => 'User not found',
+                'http' => 404
+            ];
+        }
+
+        if (!Hash::check($currentPassword, $user->password)) {
+            return [
+                'errors' => 'Current password is incorrect',
+                'http' => 401
+            ];
+        }
+
+        $user->update([
+            'password' => Hash::make($newPassword)
+        ]);
+
+        return ['success' => true, 'message' => 'Password updated successfully'];
+    }
+
+    public function updateSettings(int $userId, string $language, string $currency)
+    {
+        $user = $this->getUserById($userId);
+
+        if (is_null($user)) {
+            return [
+                'errors' => 'User not found',
+                'http' => 404
+            ];
+        }
+
+        $user->update([
+            'language' => $language,
+            'currency' => $currency
+        ]);
+
+        return ['success' => true, 'user' => $user];
+    }
 }
