@@ -17,7 +17,7 @@ class AuthenticationService
             ];
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken('auth_token', ['*'], now()->addMinutes(30))->plainTextToken;
         return [
             'access_token' => $token,
             'token_type' => 'Bearer',
