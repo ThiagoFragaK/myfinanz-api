@@ -38,12 +38,14 @@ class UsersService
         return User::find($id);
     }
 
-    public function createUser(string $name, string $email, string $password)
+    public function createUser(string $email)
     {
         return User::create([
-            'name' => $name,
+            'name' => 'User',
             'email' => $email,
-            'password' => Hash::make($password)
+            'password' => Hash::make('finanz456'),
+            'role' => 'user',
+            'is_first_login' => true
         ]);
     }
 
@@ -105,7 +107,8 @@ class UsersService
         }
 
         $user->update([
-            'password' => Hash::make($newPassword)
+            'password' => Hash::make($newPassword),
+            'is_first_login' => false
         ]);
 
         return ['success' => true, 'message' => 'Password updated successfully'];

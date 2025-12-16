@@ -14,6 +14,21 @@ class UsersController extends Controller
         $this->service = new UsersService();
     }
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|unique:users,email'
+        ]);
+
+        $user = $this->service->createUser($request->input('email'));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User created successfully',
+            'user' => $user
+        ], 201);
+    }
+
     public function updatePassword(Request $request)
     {
         $request->validate([
