@@ -25,6 +25,8 @@ class AuthenticationService
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'role' => $user->role,
+                'is_first_login' => $user->is_first_login,
                 'language' => $user->language,
                 'currency' => $user->currency,
             ]
