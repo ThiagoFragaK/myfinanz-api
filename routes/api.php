@@ -36,13 +36,22 @@ Route::middleware('auth:sanctum')->group(function () {
         ->prefix('users')->group(
             function () {
                 Route::get('/', 'get');
-                Route::get('/list', 'getList');
-                Route::get('/{id}', 'getUserById');
-                Route::post('/', 'store');
-                Route::put('/{id}', 'edit');
-                Route::delete('/{id}', 'delete');
             }
         );
+
+    Route::middleware('role:admin')->group(function () {
+         Route::controller(UsersController::class)
+            ->prefix('users')->group(
+                function () {
+                    Route::get('/', 'get');
+                    Route::get('/list', 'getList');
+                    Route::get('/{id}', 'getUserById');
+                    Route::post('/', 'store');
+                    Route::put('/{id}', 'edit');
+                    Route::delete('/{id}', 'delete');
+                }
+            );
+    });
 
     Route::controller(DashboardController::class)
         ->prefix('dashboard')->group(
