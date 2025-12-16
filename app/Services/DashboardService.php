@@ -143,7 +143,7 @@ class DashboardService
         $keys = array_keys(reset($groupedData));
         $data = array_map(function ($key) use ($months, $groupedData) {
             return [
-                'name' => ucfirst($key),
+                'name' => "home.graphs." . $key,
                 'data' => array_map(fn($month) => $groupedData[$month][$key] ?? 0, $months),
             ];
         }, $keys);
