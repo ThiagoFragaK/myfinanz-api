@@ -58,7 +58,7 @@ class UsersController extends Controller
     public function updateSettings(Request $request)
     {
         $request->validate([
-            'language' => 'required|string|in:en,deu,es,pt',
+            'language' => 'required|string|in:en,de,es,pt,fr',
             'currency' => 'required|string|in:BRL,EUR,USD,ARS',
         ]);
 
